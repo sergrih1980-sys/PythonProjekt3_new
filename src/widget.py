@@ -75,5 +75,7 @@ if __name__ == "__main__":
 result = get_mask_card_number("Visa 1234567890123456")
 print(result)
 
+test_account_number = "73654108430135874305"
+print(get_mask_account(test_account_number))
 
 
