@@ -16,5 +16,6 @@ def get_mask_account(account_number: str) -> str:
 if __name__ == "__main__":
     test_card_number = "7000 7922 8960 6361"
     print(get_mask_card_number(test_card_number))
+
     test_account_number = "73654108430135874305"
     print(get_mask_account(test_account_number))
