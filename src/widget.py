@@ -5,13 +5,13 @@ def mask_account_card(user_number: str) -> str:
     """
     Принимает строку с типом и номером карты/счёта и возвращает маску.
 
+
     Примеры входных данных:
     - 'Visa Platinum 7000792289606361'
     - 'Maestro 7000792289606361'
     - 'Счет 73654108430135874305'
-
     Возвращает:
-    - для карт: '7000 79** **** 6361'
+    - для карт: 'Visa Platinum 7000 79** **** 6361'
     - для счетов: 'Счет **4305'
     """
     # Извлекаем только цифры из строки
@@ -29,11 +29,29 @@ def mask_account_card(user_number: str) -> str:
         masked = f"**{digits[-4:]}"
         return f"Счет {masked}"
     else:
-        # Для карт показываем первые 6 цифр, затем 6 звёздочек, затем последние 4
-        masked = f"{digits[:6]}******{digits[-4:]}"
-        # Форматируем в группы по 4 символа через пробел
-        formatted = ' '.join(masked[i:i + 4] for i in range(0, len(masked), 4))
-        return formatted
+        # Для карт сохраняем название (всё до номера)
+        # Находим позицию, где начинаются цифры номера карты
+        num_start = None
+        for i, char in enumerate(user_number):
+            if char.isdigit():
+                num_start = i
+                break
+
+        if num_start is None:
+            return "Введите корректный номер Вашей карты или счёта"
+
+        # Название карты — всё до номера
+        card_name = user_number[:num_start].strip()
+
+        # Формируем маску номера карты: первые 6 цифр, затем 6 звёздочек, затем последние 4
+        masked_number = f"{digits[:6]}******{digits[-4:]}"
+
+        # Разбиваем на группы по 4 символа через пробел
+        formatted_number = ' '.join(
+            masked_number[i:i + 4] for i in range(0, len(masked_number), 4)
+        )
+
+        return f"{card_name} {formatted_number}"
 
 
 def get_date(date_string: str) -> str:
