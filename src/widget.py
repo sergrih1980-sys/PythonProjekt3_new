@@ -1,10 +1,9 @@
 from src.masks import get_mask_account, get_mask_card_number
-
+from datetime import datetime
 
 def mask_account_card(user_number: str) -> str:
     """
     Принимает строку с типом и номером карты/счёта и возвращает маску.
-
 
     Примеры входных данных:
     - 'Visa Platinum 7000792289606361'
@@ -24,7 +23,6 @@ def mask_account_card(user_number: str) -> str:
     # 2. Извлекаем только цифры
     digits = ''.join(char for char in user_number if char.isdigit())
     count_code = len(digits)
-
 
     # 3. Проверяем длину номера
     if count_code not in (16, 20):
@@ -52,7 +50,6 @@ def mask_account_card(user_number: str) -> str:
         # Название карты — всё до номера
         card_name = user_number[:num_start].strip()
 
-
         # Формируем маску: первые 6 + 6 звёздочек + последние 4
         if count_code == 16:
             masked_number = f"{digits[:6]}******{digits[-4:]}"
@@ -69,53 +66,33 @@ def mask_account_card(user_number: str) -> str:
 
 
 def get_date(date_string: str) -> str:
-    """
-    Принимает строку с датой в формате 'YYYY-MM-DDTHH:MM:SS.ffffff'
-    и возвращает дату в формате 'ДД.ММ.ГГГГ'.
-
-    Примеры:
-        Вход:  '2024-03-11T02:26:18.671407'
-        Выход: '11.03.2024'
-
-        Вход:  '' → 'Некорректный формат даты'
-        Вход:  None → TypeError (но мы обрабатываем)
-        Вход:  '2024-03-11' → 'Некорректный формат даты' (нет T)
-    """
-    # 1. Проверка типа и пустоты
-    if not isinstance(date_string, str):
-        return "Некорректный формат даты"
-
-    if not date_string.strip():
+    if not isinstance(date_string, str) or not date_string.strip():
         return "Некорректный формат даты"
 
     date_string = date_string.strip()
 
-    # 2. Проверка наличия разделителя 'T'
     if 'T' not in date_string:
         return "Некорректный формат даты"
 
     try:
-        # 3. Извлекаем часть до 'T' (дата)
         date_part = date_string.split('T')[0]
 
-        # 4. Разбиваем на компоненты
+        # Эта строка вызовет ValueError, если дата некорректна
+        datetime.strptime(date_part, "%Y-%m-%d")
+
         year, month, day = date_part.split('-')
 
-        # 5. Дополнительная проверка: все части — цифры и корректные длины
+        # Дополнительно проверяем, что все части — цифры и нужной длины
         if not (year.isdigit() and month.isdigit() and day.isdigit()):
             return "Некорректный формат даты"
         if len(year) != 4 or len(month) != 2 or len(day) != 2:
             return "Некорректный формат даты"
 
-        # 6. Формируем результат в формате ДД.ММ.ГГГГ
         return f"{day}.{month}.{year}"
 
-    except (ValueError, AttributeError, IndexError):
-        # ValueError: неверный формат даты (например, 2024-13-01)
-        # AttributeError: если объект не имеет split
-        # IndexError: если split вернул меньше 3 элементов
-        return "Некорректный формат даты"
 
+    except (ValueError, AttributeError, IndexError):
+        return "Некорректный формат даты"
 
 # Примеры использования (можно убрать в продакшене)
 if __name__ == "__main__":
