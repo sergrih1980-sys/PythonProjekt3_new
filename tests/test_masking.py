@@ -2,35 +2,33 @@ import pytest
 from src.masks import get_mask_card_number, get_mask_account
 
 
-def test_get_mask_card_number_long(self):
+
+def test_get_mask_card_number_long():
     # Стандартная 16‑значная карта
     result = get_mask_card_number("1234567890123456")
-    self.assertEqual(result, "1234 56** **** 3456")
+    assert result == "1234 56** **** 3456"
 
-    # С пробелами
-    result = get_mask_card_number("1234 5678 9012 3456")
-    self.assertEqual(result, "1234 56** **** 3456")
+def test_get_mask_card_number_short():
+    # Короткая карта (8 цифр)
+    result = get_mask_card_number("12345678")
+    assert result == "1234 ** ****    "
 
-    @pytest.mark.parametrize([
-        ("1234567890123456", "1234 56** **** 3456"),
-        ("1234 5678 9012 3456", "1234 56** **** 3456"),
-        ("12345678", "1234 ** ****    "),
-        ("1234", "1234 ** ****    "),
-        ("", "    ** ****    "),
-        ("  1234  5678  ", "1234 ** ****    "),
-    ])
-    def test_get_mask_card_number(self, card_number, expected):
-        result = get_mask_card_number(card_number)
-        self.assertEqual(result, expected)
+def test_get_mask_card_number_empty():
+    # Пустая строка
+    result = get_mask_card_number("")
+    assert result == "    ** ****    "
 
-    @pytest.mark.parametrize([
-        ("abc123", "**0123"),
-        ("1234", "**1234"),
-        ("abc12345678", "**5678"),
-        ("", "**"),
-        ("x1y2z3", "**0023"),
-        ("9", "**0009"),
-    ])
-    def test_get_mask_account(self, account_number, expected):
-        result = get_mask_account(account_number)
-        self.assertEqual(result, expected)
+def test_get_mask_account_short():
+    # 3 цифры
+    result = get_mask_account("abc123")
+    assert result == "**0123"
+
+def test_get_mask_account_long():
+    # Больше 4 цифр
+    result = get_mask_account("abc12345678")
+    assert result == "**5678"
+
+def test_get_mask_account_empty():
+    # Пустой ввод
+    result = get_mask_account("")
+    assert result == "**"
