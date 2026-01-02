@@ -1,13 +1,25 @@
 def get_mask_card_number(card_number: str) -> str:
     """Маскирует номер банковской карты, возвращает строку
     в формате: XXXX XX** **** XXXX"""
-    cleaned = card_number.replace(' ', '')
-    if not cleaned:
+    # Удаляем все нецифровые символы
+    digits = ''.join(filter(str.isdigit, card_number))
+
+    # Если цифр нет - возвращаем шаблон с пробелами
+    if not digits:
         return '    ** ****    '
-    if len(cleaned) < 12:
-        prefix = cleaned.ljust(4, ' ')
+
+    # Для номеров короче 12 цифр - особый формат
+    if len(digits) < 12:
+        # Берём до 4 первых цифр, дополняем пробелами
+        prefix = digits[:4].ljust(4, ' ')
         return f'{prefix} ** ****    '
-    return f'{cleaned[:4]} {cleaned[4:6]}** **** {cleaned[-4:]}'
+
+    # Стандартный формат для 12+ цифр: XXXX XX** **** XXXX
+    first_4 = digits[:4]
+    middle_2 = digits[4:6]
+    last_4 = digits[-4:]
+
+    return f'{first_4} {middle_2}** **** {last_4}'
 
 
 def get_mask_account(account_number: str) -> str:
@@ -15,15 +27,20 @@ def get_mask_account(account_number: str) -> str:
     Маскирует номер банковского счета.
     Возвращает строку в формате: **XXXX
     """
-    # Извлекаем только цифры из входной строки
+    # Извлекаем только цифры
     digits = ''.join(filter(str.isdigit, account_number))
 
-    # Если цифр ≤ 4 — возвращаем все цифры с префиксом **
-    if len(digits) <= 4:
-        return f'**{digits}'
+    # Если цифр нет - просто возвращаем **
+    if not digits:
+        return '**'
 
-    # Иначе — только последние 4 цифры с префиксом **
-    return f'**{digits[-4:]}
+    # Если цифр <= 4 - дополняем до 4 нулями слева
+    if len(digits) <= 4:
+        padded = digits.zfill(4)
+        return f'**{padded}'
+
+    # Иначе - берём последние 4 цифры
+    return f'**{digits[-4:]}'
 
 
 if __name__ == "__main__":
