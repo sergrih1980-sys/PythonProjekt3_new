@@ -3,6 +3,11 @@ import pytest
 from src.processing import filter_by_state, sort_by_date
 
 
+def test_empty_list():
+    """Тест: пустой входной список — возвращается пустой список."""
+    result = filter_by_state([], "EXECUTED")
+    assert result == []
+
 @pytest.mark.parametrize("operations,state,expected_count", [
     # Сценарий 1: только EXECUTED
     ([{'state': 'EXECUTED'}, {'state': 'EXECUTED'}], 'EXECUTED', 2),
