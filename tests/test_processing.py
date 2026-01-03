@@ -47,3 +47,10 @@ def test_sort_by_date_single_item():
         operations = [{'id': 1, 'date': '2024-01-10'}]
         result = sort_by_date(operations, reverse=False)
         assert result[0]['id'] == 1
+
+
+def test_missing_date_key():
+    """Тест: отсутствует ключ 'date' — должно вызвать KeyError."""
+    data = [{"value": "NoDate"}]
+    with pytest.raises(KeyError):
+        sort_by_date(data, reverse=True)
