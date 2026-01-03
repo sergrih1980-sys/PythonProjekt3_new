@@ -32,3 +32,16 @@ def test_get_mask_account_empty():
     # Пустой ввод
     result = get_mask_account("")
     assert result == "**"
+
+
+def test_no_digits_in_input():
+    """Во входной строке нет цифр."""
+    assert get_mask_account("abc") == "**"
+    assert get_mask_account("!@#$%") == "**"
+    assert get_mask_account("") == "**"
+
+
+def test_whitespace_and_symbols():
+    """Строка с пробелами, дефисами и др. символами."""
+    assert get_mask_account("  12-34-56  ") == "**3456"
+    assert get_mask_account("\t\n789\r") == "**0789!"  # visible_digits=4
