@@ -44,4 +44,4 @@ def test_no_digits_in_input():
 def test_whitespace_and_symbols():
     """Строка с пробелами, дефисами и др. символами."""
     assert get_mask_account("  12-34-56  ") == "**3456"
-    assert get_mask_account("\t\n789\r") == "**0789!"  # visible_digits=4
+    assert get_mask_account("\t\n789\r") == "**0789"  # visible_digits=4
