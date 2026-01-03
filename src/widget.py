@@ -90,12 +90,12 @@ def get_date(date_string: str) -> str:
 
         return f"{day}.{month}.{year}"
 
-
     except (ValueError, AttributeError, IndexError):
         return "Некорректный формат даты"
 
 # Примеры использования (можно убрать в продакшене)
 if __name__ == "__main__":
+
     # Тестирование маскирования карт/счетов
     print(mask_account_card("Visa Platinum 7000792289606361"))  # 7000 79** **** 6361
     print(mask_account_card("Maestro 7000792289606361"))  # 7000 79** **** 6361
