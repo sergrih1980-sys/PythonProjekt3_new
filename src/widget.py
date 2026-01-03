@@ -1,6 +1,7 @@
 from src.masks import get_mask_account, get_mask_card_number
 from datetime import datetime
 
+
 def mask_account_card(user_number: str) -> str:
     """
     Принимает строку с типом и номером карты/счёта и возвращает маску.
