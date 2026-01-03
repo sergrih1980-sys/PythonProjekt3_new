@@ -3,6 +3,17 @@ import pytest
 from src.processing import filter_by_state, sort_by_date
 
 
+def test_missing_state_key():
+    """Тест: у некоторых словарей нет ключа 'state' — они игнорируются."""
+    data = [
+        {"id": "1", "state": "EXECUTED"},
+        {"id": "2"},  # Нет ключа 'state'
+        {"id": "3", "state": "EXECUTED"},
+    ]
+    result = filter_by_state(data, "EXECUTED")
+    assert len(result) == 2
+    assert all(item["id"] in ["1", "3"] for item in result)
+
 def test_empty_list():
     """Тест: пустой входной список — возвращается пустой список."""
     result = filter_by_state([], "EXECUTED")
