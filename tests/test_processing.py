@@ -42,3 +42,8 @@ def test_sort_by_date_parametrized(operations, reverse, expected_ids):
 def test_sort_by_date_empty_list():
     result = sort_by_date([], reverse=True)
     assert result == []  # Должен вернуться пустой список
+
+def test_sort_by_date_single_item():
+        operations = [{'id': 1, 'date': '2024-01-10'}]
+        result = sort_by_date(operations, reverse=False)
+        assert result[0]['id'] == 1
