@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from src.masks import get_mask_account, get_mask_card_number
 
 
@@ -5,32 +7,39 @@ def mask_account_card(user_number: str) -> str:
     """
     Принимает строку с типом и номером карты/счёта и возвращает маску.
 
-
     Примеры входных данных:
     - 'Visa Platinum 7000792289606361'
     - 'Maestro 7000792289606361'
     - 'Счет 73654108430135874305'
+
     Возвращает:
     - для карт: 'Visa Platinum 7000 79** **** 6361'
     - для счетов: 'Счет **4305'
     """
-    # Извлекаем только цифры из строки
+    # 1. Проверка типа и пустоты
+    if not isinstance(user_number, str) or not user_number.strip():
+        return "Введите корректный номер Вашей карты или счёта"
+
+    user_number = user_number.strip()
+
+    # 2. Извлекаем только цифры
     digits = ''.join(char for char in user_number if char.isdigit())
     count_code = len(digits)
 
-    # Проверяем корректность длины номера
+    # 3. Проверяем длину номера
     if count_code not in (16, 20):
         return "Введите корректный номер Вашей карты или счёта"
 
-    # Определяем тип продукта (карта или счёт)
+    # 4. Определяем тип продукта
     user_number_lower = user_number.lower()
+
     if 'счет' in user_number_lower or 'account' in user_number_lower:
-        # Для счёта показываем только последние 4 цифры с префиксом **
+        # Для счёта: ** + последние 4 цифры
         masked = f"**{digits[-4:]}"
         return f"Счет {masked}"
+
     else:
-        # Для карт сохраняем название (всё до номера)
-        # Находим позицию, где начинаются цифры номера карты
+        # Для карт: ищем позицию начала цифр
         num_start = None
         for i, char in enumerate(user_number):
             if char.isdigit():
@@ -43,10 +52,14 @@ def mask_account_card(user_number: str) -> str:
         # Название карты — всё до номера
         card_name = user_number[:num_start].strip()
 
-        # Формируем маску номера карты: первые 6 цифр, затем 6 звёздочек, затем последние 4
-        masked_number = f"{digits[:6]}******{digits[-4:]}"
+        # Формируем маску: первые 6 + 6 звёздочек + последние 4
+        if count_code == 16:
+            masked_number = f"{digits[:6]}******{digits[-4:]}"
+        else:
+            # Если вдруг 20 цифр, но не счёт (ошибка)
+            return "Введите корректный номер Вашей карты или счёта"
 
-        # Разбиваем на группы по 4 символа через пробел
+        # Разбиваем на группы по 4 через пробел
         formatted_number = ' '.join(
             masked_number[i:i + 4] for i in range(0, len(masked_number), 4)
         )
@@ -55,30 +68,38 @@ def mask_account_card(user_number: str) -> str:
 
 
 def get_date(date_string: str) -> str:
-    """
-    Принимает строку с датой в формате 'YYYY-MM-DDTHH:MM:SS.ffffff'
-    и возвращает дату в формате 'ДД.ММ.ГГГГ'.
-
-    Пример:
-        Вход:  '2024-03-11T02:26:18.671407'
-        Выход: '11.03.2024'
-    """
-    try:
-        # Разделяем дату и время по символу 'T'
-        date_part = date_string.split('T')[0]
-
-        # Разбиваем дату на компоненты: год, месяц, день
-        year, month, day = date_part.split('-')
-
-        # Формируем итоговую строку в формате ДД.ММ.ГГГГ
-        return f"{day}.{month}.{year}"
-
-    except (ValueError, IndexError) as e:
+    if not isinstance(date_string, str) or not date_string.strip():
         return "Некорректный формат даты"
 
+    date_string = date_string.strip()
+
+    if 'T' not in date_string:
+        return "Некорректный формат даты"
+
+    try:
+        date_part = date_string.split('T')[0]
+
+        # Эта строка вызовет ValueError, если дата некорректна
+        datetime.strptime(date_part, "%Y-%m-%d")
+
+        year, month, day = date_part.split('-')
+
+        # Дополнительно проверяем, что все части — цифры и нужной длины
+        if not (year.isdigit() and month.isdigit() and day.isdigit()):
+            return "Некорректный формат даты"
+        if len(year) != 4 or len(month) != 2 or len(day) != 2:
+            return "Некорректный формат даты"
+
+        return f"{day}.{month}.{year}"
+
+    except (ValueError, AttributeError, IndexError):
+        return "Некорректный формат даты"
 
 # Примеры использования (можно убрать в продакшене)
+
+
 if __name__ == "__main__":
+
     # Тестирование маскирования карт/счетов
     print(mask_account_card("Visa Platinum 7000792289606361"))  # 7000 79** **** 6361
     print(mask_account_card("Maestro 7000792289606361"))  # 7000 79** **** 6361
