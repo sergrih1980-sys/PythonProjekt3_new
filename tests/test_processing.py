@@ -57,13 +57,12 @@ def test_filter_by_state_parametrized(
      ], True, [1, 2]),
 ])
 def test_sort_by_date_parametrized(
-    operations: list[dict[str, int | str]],  # id: int, date: str
+    operations: list[dict[str, int | str]],
     reverse: bool,
     expected_ids: list[int]
 ) -> None:
     result = sort_by_date(operations, reverse)
     assert [item['id'] for item in result] == expected_ids
-
 
 def test_sort_by_date_empty_list() -> None:
     result = sort_by_date([], reverse=True)
