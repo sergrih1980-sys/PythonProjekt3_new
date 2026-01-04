@@ -1,6 +1,6 @@
 import pytest
 from src.widget import mask_account_card, get_date
-
+from typing import Any
 
 # --- Тесты для mask_account_card ---
 
@@ -12,7 +12,7 @@ from src.widget import mask_account_card, get_date
     ("Card ", "Введите корректный номер Вашей карты или счёта"),         # нет цифр
     ("Счет ABC", "Введите корректный номер Вашей карты или счёта"),   # нет цифр в счете
 ])
-def test_mask_account_card_invalid(input_data, error_msg) -> None:
+def test_mask_account_card_invalid(input_data: str, error_msg: str) -> None:
     """Тестируем некорректные/граничные входные данные."""
     result = mask_account_card(input_data)
     assert result == error_msg
@@ -22,7 +22,7 @@ def test_mask_account_card_invalid(input_data, error_msg) -> None:
     ("МИР 2200111122223333", "МИР 2200 11** **** 3333"),
     ("Tinkoff Black 5555666677778888", "Tinkoff Black 5555 66** **** 8888"),
 ])
-def test_mask_account_card_other_card_types(input_data, expected_prefix) -> None:
+def test_mask_account_card_other_card_types(input_data: str, expected_prefix: str) -> None:
     """Тестируем другие типы карт (МИР, Tinkoff и т.п.)."""
     result = mask_account_card(input_data)
     assert result == expected_prefix
@@ -37,7 +37,7 @@ def test_mask_account_card_other_card_types(input_data, expected_prefix) -> None
     # Без миллисекунд
     ("2023-05-15T10:15:20", "15.05.2023"),
 ])
-def test_get_date_valid(date_string, expected) -> None:
+def test_get_date_valid(date_string: str, expected: str) -> None:
     """Тестируем корректный формат даты."""
     result = get_date(date_string)
     assert result == expected
@@ -55,7 +55,7 @@ def test_get_date_valid(date_string, expected) -> None:
     (None, "Некорректный формат даты"),                    # None
     (123, "Некорректный формат даты"),                     # не строка
 ])
-def test_get_date_invalid(date_string, error_msg) -> None:
+def test_get_date_invalid(date_string: Any, error_msg: str) -> None:
     """Тестируем некорректные/граничные входные данные."""
     result = get_date(date_string)
     assert result == error_msg
@@ -65,7 +65,7 @@ def test_get_date_invalid(date_string, error_msg) -> None:
     ("2024/03/11T02:26:18", "Некорректный формат даты"),
     ("2024.03.11T02:26:18", "Некорректный формат даты"),
 ])
-def test_get_date_wrong_separators(date_string, expected) -> None:
+def test_get_date_wrong_separators(date_string: str, expected: str) -> None:
     """Тестируем неверные разделители в дате."""
     result = get_date(date_string)
     assert result == expected

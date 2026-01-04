@@ -37,7 +37,7 @@ def test_get_mask_account_long() -> None:
     assert result == "**5678"
 
 
-def test_get_mask_account_empty(account_empty) -> None:
+def test_get_mask_account_empty(account_empty: str) -> None:
 
     # Пустой ввод
     result = get_mask_account("")
@@ -51,7 +51,7 @@ def test_no_digits_in_input() -> None:
     assert get_mask_account("") == "**"
 
 
-def test_whitespace_and_symbols(symbol):
+def test_whitespace_and_symbols(symbol ):
     """Строка с пробелами, дефисами и др. символами."""
     assert get_mask_account("  12-34-56  ") == symbol
     assert get_mask_account("\t\n789\r") == "**0789"  # visible_digits=4
