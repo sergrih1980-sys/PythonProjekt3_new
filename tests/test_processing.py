@@ -57,7 +57,7 @@ def test_filter_by_state_parametrized(
      ], True, [1, 2]),
 ])
 def test_sort_by_date_parametrized(
-    operations: list[dict[str, Any]],
+    operations: list[dict[str, int | str]],  # id: int, date: str
     reverse: bool,
     expected_ids: list[int]
 ) -> None:
