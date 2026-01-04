@@ -14,10 +14,12 @@ def test_missing_state_key():
     assert len(result) == 2
     assert all(item["id"] in ["1", "3"] for item in result)
 
+
 def test_empty_list():
     """Тест: пустой входной список — возвращается пустой список."""
     result = filter_by_state([], "EXECUTED")
     assert result == []
+
 
 @pytest.mark.parametrize("operations,state,expected_count", [
     # Сценарий 1: только EXECUTED
@@ -59,10 +61,11 @@ def test_sort_by_date_empty_list():
     result = sort_by_date([], reverse=True)
     assert result == []  # Должен вернуться пустой список
 
+
 def test_sort_by_date_single_item():
-        operations = [{'id': 1, 'date': '2024-01-10'}]
-        result = sort_by_date(operations, reverse=False)
-        assert result[0]['id'] == 1
+    operations = [{'id': 1, 'date': '2024-01-10'}]
+    result = sort_by_date(operations, reverse=False)
+    assert result[0]['id'] == 1
 
 
 def test_missing_date_key():
