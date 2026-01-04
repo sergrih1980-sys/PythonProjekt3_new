@@ -4,6 +4,7 @@ from typing import Any
 
 # --- Тесты для mask_account_card ---
 
+
 @pytest.mark.parametrize("input_data, error_msg", [
     ("", "Введите корректный номер Вашей карты или счёта"),
     ("Visa 1234", "Введите корректный номер Вашей карты или счёта"),  # <16 цифр
