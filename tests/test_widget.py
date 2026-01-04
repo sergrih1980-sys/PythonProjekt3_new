@@ -2,7 +2,6 @@ import pytest
 from src.widget import mask_account_card, get_date
 
 
-
 # --- Тесты для mask_account_card ---
 
 @pytest.mark.parametrize("input_data, error_msg", [
@@ -19,7 +18,6 @@ def test_mask_account_card_invalid(input_data, error_msg):
     assert result == error_msg
 
 
-
 @pytest.mark.parametrize("input_data, expected_prefix", [
     ("МИР 2200111122223333", "МИР 2200 11** **** 3333"),
     ("Tinkoff Black 5555666677778888", "Tinkoff Black 5555 66** **** 8888"),
@@ -28,7 +26,6 @@ def test_mask_account_card_other_card_types(input_data, expected_prefix):
     """Тестируем другие типы карт (МИР, Tinkoff и т.п.)."""
     result = mask_account_card(input_data)
     assert result == expected_prefix
-
 
 
 # --- Тесты для get_date ---
@@ -46,18 +43,17 @@ def test_get_date_valid(date_string, expected):
     assert result == expected
 
 
-
 @pytest.mark.parametrize("date_string, error_msg", [
     ("", "Некорректный формат даты"),
     ("2024-03-11", "Некорректный формат даты"),           # нет 'T'
     ("11-03-2024T02:26:18", "Некорректный формат даты"),  # неверный порядок
     ("invalid-date", "Некорректный формат даты"),
-    ("2024-13-01T00:00:00", "Некорректный формат даты"), # неверный месяц
-    ("2024-00-10T00:00:00", "Некорректный формат даты"), # неверный день
-    ("2024-02-30T00:00:00", "Некорректный формат даты"), # 30 февраля
+    ("2024-13-01T00:00:00", "Некорректный формат даты"),  # неверный месяц
+    ("2024-00-10T00:00:00", "Некорректный формат даты"),  # неверный день
+    ("2024-02-30T00:00:00", "Некорректный формат даты"),  # 30 февраля
     ("abc", "Некорректный формат даты"),
     (None, "Некорректный формат даты"),                    # None
-    (123, "Некорректный формат даты"),                      # не строка
+    (123, "Некорректный формат даты"),                     # не строка
 ])
 def test_get_date_invalid(date_string, error_msg):
     """Тестируем некорректные/граничные входные данные."""
