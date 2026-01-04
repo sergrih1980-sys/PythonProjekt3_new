@@ -1,4 +1,4 @@
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 from src.masks import get_mask_account, get_mask_card_number
 from src.widget import get_date, mask_account_card
@@ -23,7 +23,6 @@ def filter_by_state(
         if item.get('state') == state:
             filtered_list.append(item)
     return filtered_list
-
 
 
 def sort_by_date(
@@ -71,7 +70,6 @@ if __name__ == "__main__":
 
     test_account_number = "73654108430135874305"
     print(get_mask_account(test_account_number))
-
 
     print(mask_account_card("Visa Platinum 7000792289606361"))  # 7000 79** **** 6361
     print(mask_account_card("Maestro 7000792289606361"))         # 7000 79** **** 6361
