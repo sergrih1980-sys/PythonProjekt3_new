@@ -1,7 +1,6 @@
 import pytest
 
 
-
 @pytest.fixture
 def symbol():
     return  "**3456"
