@@ -64,6 +64,7 @@ def test_sort_by_date_parametrized(
     result = sort_by_date(operations, reverse)
     assert [item['id'] for item in result] == expected_ids
 
+
 def test_sort_by_date_empty_list() -> None:
     result = sort_by_date([], reverse=True)
     assert result == []  # Должен вернуться пустой список
