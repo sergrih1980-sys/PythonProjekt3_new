@@ -1,9 +1,11 @@
+from typing import Any, List
+
 import pytest
 
 from src.processing import filter_by_state, sort_by_date
 
 
-def test_missing_state_key():
+def test_missing_state_key() -> None:
     """Тест: у некоторых словарей нет ключа 'state' — они игнорируются."""
     data = [
         {"id": "1", "state": "EXECUTED"},
@@ -14,10 +16,12 @@ def test_missing_state_key():
     assert len(result) == 2
     assert all(item["id"] in ["1", "3"] for item in result)
 
-def test_empty_list():
+
+def test_empty_list() -> None:
     """Тест: пустой входной список — возвращается пустой список."""
     result = filter_by_state([], "EXECUTED")
     assert result == []
+
 
 @pytest.mark.parametrize("operations,state,expected_count", [
     # Сценарий 1: только EXECUTED
@@ -27,7 +31,11 @@ def test_empty_list():
     # Сценарий 3: смешанные статусы
     ([{'state': 'EXECUTED'}, {'state': 'CANCELED'}], 'CANCELED', 1),
 ])
-def test_filter_by_state_parametrized(operations, state, expected_count):
+def test_filter_by_state_parametrized(
+    operations: list[dict[str, str]],
+    state: str,
+    expected_count: int
+) -> None:
     result = filter_by_state(operations, state)
     assert len(result) == expected_count
 
@@ -50,22 +58,27 @@ def test_filter_by_state_parametrized(operations, state, expected_count):
          {'id': 2, 'date': '2024-01-05'}
      ], True, [1, 2]),
 ])
-def test_sort_by_date_parametrized(operations, reverse, expected_ids):
+def test_sort_by_date_parametrized(
+    operations: List[dict[str, Any]],
+    reverse: bool,
+    expected_ids: List[int]
+) -> None:
     result = sort_by_date(operations, reverse)
     assert [item['id'] for item in result] == expected_ids
 
 
-def test_sort_by_date_empty_list():
+def test_sort_by_date_empty_list() -> None:
     result = sort_by_date([], reverse=True)
     assert result == []  # Должен вернуться пустой список
 
-def test_sort_by_date_single_item():
-        operations = [{'id': 1, 'date': '2024-01-10'}]
-        result = sort_by_date(operations, reverse=False)
-        assert result[0]['id'] == 1
+
+def test_sort_by_date_single_item() -> None:
+    operations = [{'id': 1, 'date': '2024-01-10'}]
+    result = sort_by_date(operations, reverse=False)
+    assert result[0]['id'] == 1
 
 
-def test_missing_date_key():
+def test_missing_date_key() -> None:
     """Тест: отсутствует ключ 'date' — должно вызвать KeyError."""
     data = [{"value": "NoDate"}]
     with pytest.raises(KeyError):
