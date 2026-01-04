@@ -32,7 +32,6 @@ def test_get_mask_account_short():
 
 def test_get_mask_account_long():
 
-
     # Больше 4 цифр
     result = get_mask_account("abc12345678")
     assert result == "**5678"
