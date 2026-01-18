@@ -1,13 +1,10 @@
 
 def filter_by_currency(spisok, valuta):
-    """
-    Фильтрует список транзакций по указанной валюте.
-
+  """
     Функция принимает список транзакций (словари) и код валюты,
     возвращает объект filter, содержащий только транзакции, где код валюты
     совпадает с заданным.
-
-    """
+   """
 
     return filter(
         lambda x: x["operationAmount"]["currency"]["code"] == valuta,
@@ -34,6 +31,11 @@ def card_number_generator(start, end):
          padded = str(num).zfill(16)
          # Разбиваем на группы по 4 цифры
          yield f"{padded[:4]} {padded[4:8]} {padded[8:12]} {padded[12:16]}"
+
+
+
+
+
 
 
 
