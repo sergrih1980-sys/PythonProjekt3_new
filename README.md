@@ -81,22 +81,138 @@
 
 # Финансовый инструментарий: обработка транзакций и генерация номеров карт
 
-
-Набор функций для работы с банковскими данными: фильтрация транзакций по валюте, получение описаний операций, генерация тестовых номеров карт.
-
-## Общее описание
+## `filter_by_currency(spisok, valuta)`
 
 
-Модуль включает **3 функции**:
+**Назначение**  
+Фильтрует список транзакций, оставляя только те, где код валюты совпадает с заданным.
 
-- `filter_by_currency()` — фильтрация транзакций по коду валюты;
-- `transaction_descriptions()` — генерация описаний транзакций;
-- `card_number_generator()` — создание номеров карт в формате `XXXX XXXX XXXX XXXX`.
+**Синтаксис**
+```python ```
+def filter_by_currency(spisok, valuta):
+    """
+    Функция принимает список транзакций (словари) и код валюты,
+    возвращает объект filter, содержащий только транзакции, где код валюты
+    совпадает с заданным.
+    """
+    return filter(
+        lambda x: x["operationAmount"]["currency"]["code"] == valuta,
+        spisok
+    )
+## Пример использования функции `filter_by_currency`
 
-**Применение**:
-- обработка банковских выписок;
-- подготовка тестовых данных;
-- анонимизация информации;
-- ETL‑процессы.
+Ниже приведён пример того, как можно применить функцию для фильтрации транзакций по коду валюты.
+
+**Код примера**
+```python```
+transactions = [
+    {
+        "operationAmount": {
+            "currency": {
+                "code": "RUB"
+            }
+        },
+        "description": "Покупка в магазине"
+    },
+    {
+        "operationAmount": {
+            "currency": {
+                "code": "USD"
+            }
+        },
+        "description": "Перевод за границу"
+    }
+]
+
+filtered = filter_by_currency(transactions, "RUB")
+for transaction in filtered:
+    print(transaction)
+Пояснение
+
+Создаётся список transactions, содержащий две транзакции:
+
+первая — в рублях ("RUB");
+
+вторая — в долларах США ("USD").
+
+Вызывается функция filter_by_currency():
+
+аргумент transactions — исходный список транзакций;
+
+аргумент "RUB" — код валюты для фильтрации.
+
+Результат (объект filter) сохраняется в переменную filtered.
+
+В цикле for выводятся отфильтрованные транзакции.
+
+Результат выполнения
+На экран будет выведена только транзакция с валютой RUB:
+
+python
+{
+    'operationAmount': {
+        'currency': {
+            'code': 'RUB'
+        }
+    },
+    'description': 'Покупка в магазине'
+}
+
+## `transaction_descriptions(transactions)`
+
+**Назначение**  
+Генератор, последовательно возвращающий описания транзакций из переданного набора данных. При отсутствии описания возвращает пустую строку.
+
+**Синтаксис**
+```python```
+def transaction_descriptions(transactions):
+    """
+    Генератор, возвращающий описания транзакций по очереди.
+    """
+    for transaction in transactions:
+        # Безопасное получение описания: если ключа нет — возвращаем пустую строку
+        description = transaction.get('description', '')
+        yield description
+
+# Пример списка транзакций
+transactions = [
+    {'description': 'Покупка продуктов'},
+    {'amount': 1000},  # Нет поля 'description'
+    {'description': 'Оплата интернета'},
+    {}  # Пустой словарь
+]
+
+# Итерация по генератору
+for desc in transaction_descriptions(transactions):
+    print(desc)
+
+## `card_number_generator(start, end)`
 
 
+**Назначение**  
+Генератор, создающий номера банковских карт в стандартном формате: `XXXX XXXX XXXX XXXX` (четыре группы по 4 цифры, разделённые пробелами).
+
+**Синтаксис**
+```python```
+def card_number_generator(start, end):
+    """
+    Генератор номеров банковских карт в формате XXXX XXXX XXXX XXXX.
+    """
+    for num in range(start, end + 1):
+        # Формируем 16‑значный номер с нулями слева
+        padded = str(num).zfill(16)
+        # Разбиваем на группы по 4 цифры
+        yield f"{padded[:4]} {padded[4:8]} {padded[8:12]} {padded[12:16]}"
+
+## Пример использования генератора `card_number_generator`
+
+**Код примера**
+```python```
+for card_number in card_number_generator(1, 3):
+    print(card_number)
+
+### Результат выполнения (вывод)
+
+0000 0000 0000 0001
+0000 0000 0000 0002
+0000 0000 0000 0003

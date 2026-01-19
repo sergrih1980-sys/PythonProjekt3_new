@@ -27,13 +27,10 @@ def card_number_generator(start, end):
     Генератор номеров банковских карт в формате XXXX XXXX XXXX XXXX.
     """
     for num in range(start, end + 1):
-         # Формируем 16‑значный номер с нулями слева
-         padded = str(num).zfill(16)
-         # Разбиваем на группы по 4 цифры
-         yield f"{padded[:4]} {padded[4:8]} {padded[8:12]} {padded[12:16]}"
-
-
-
+        # Формируем 16‑значный номер с нулями слева
+        padded = str(num).zfill(16)
+        # Разбиваем на группы по 4 цифры
+        yield f"{padded[:4]} {padded[4:8]} {padded[8:12]} {padded[12:16]}"
 
 
 
