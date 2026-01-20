@@ -2,6 +2,8 @@ import pytest
 from typing import Any, Dict, List, Tuple
 
 
+
+
 @pytest.fixture
 def symbol() -> str:
     """Фикстура: строка с маской номера счёта."""
