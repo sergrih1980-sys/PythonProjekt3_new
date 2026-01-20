@@ -1,6 +1,7 @@
 from typing import Any, Dict, Generator, Iterator, List
 
 
+
 def filter_by_currency(spisok: List[Dict[str, Any]], valuta: str) -> Iterator[Dict[str, Any]]:
     """
     Функция принимает список транзакций (словари) и код валюты,
