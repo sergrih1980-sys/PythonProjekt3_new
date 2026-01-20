@@ -104,12 +104,6 @@ def single_transaction_without_description() -> List[Dict[str, Any]]:
 
 
 @pytest.fixture
-def range_1_to_3() -> Tuple[int, int]:
-    """Фикстура: небольшой диапазон (1–3) для базовой проверки формата."""
-    return 1, 3
-
-
-@pytest.fixture
 def range_single() -> Tuple[int, int]:
     """Фикстура: диапазон из одного числа (граничный случай)."""
     return 42, 42
@@ -124,3 +118,14 @@ def edge_cases() -> List[Tuple[int, int]]:
         (9999999999999999, 9999999999999999),
         (10000000000000000, 10000000000000000)
     ]
+
+@pytest.fixture
+def empty_range() -> Tuple[int, int]:
+    """Фикстура: пустой диапазон (например, 10, 9)."""
+    return 10, 9  # start > end → пустой диапазон
+
+
+@pytest.fixture
+def small_range() -> Tuple[int, int]:
+    """Фикстура: небольшой диапазон (например, 1, 3)."""
+    return 1, 3
