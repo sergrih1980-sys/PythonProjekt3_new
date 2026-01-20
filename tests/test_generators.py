@@ -17,6 +17,22 @@ def test_filter_by_currency_basic(transactions_basic: List[Dict[str, Any]]) -> N
     assert len(result) == 2
     assert all(t["operationAmount"]["currency"]["code"] == "RUB" for t in result)
 
+test_cases = [
+    (
+        [
+            {"operationAmount": {"currency": {"code": "RUB"}}},
+            {"operationAmount": {"currency": {"code": "USD"}}}
+        ],
+        "RUB",
+        1
+    ),
+    (
+        [],
+        "EUR",
+        0
+    )
+]
+
 
 @pytest.mark.parametrize("transactions,currency,expected_count", test_cases)
 def test_filter_by_currency_parametrized(
