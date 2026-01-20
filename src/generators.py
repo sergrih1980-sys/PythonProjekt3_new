@@ -5,8 +5,7 @@ def filter_by_currency(spisok, valuta):
     возвращает объект filter, содержащий только транзакции, где код валюты
     совпадает с заданным.
    """
-
-    return filter(
+  return filter(
         lambda x: x["operationAmount"]["currency"]["code"] == valuta,
         spisok
     )

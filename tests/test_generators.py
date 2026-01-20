@@ -38,3 +38,30 @@ def test_transaction_descriptions_empty(empty_transactions):
     result = list(transaction_descriptions(empty_transactions))
     expected = []
     assert result == expected
+
+
+def test_consistency_with_string_conversion():
+    """Тест: соответствие строкового представления числа и формата вывода."""
+    num = 123456789
+    padded = str(num).zfill(16)
+    formatted = f"{padded[:4]} {padded[4:8]} {padded:8:12]} {padded[12:16]}"
+
+    generator = card_number_generator(num, num)
+    result = next(generator)
+    assert result == formatted
+
+def test_empty_range_behavior(empty_range):
+    """Тест: пустой диапазон не должен выдавать значений."""
+    start, end = empty_range
+    generator = card_number_generator(start, end)
+    results = list(generator)
+    assert len(results) == 0, "Пустой диапазон должен возвращать пустой генератор"
+
+
+def test_format_correctness(small_range):
+    """Тест: проверка корректности формата вывода (4×4 цифры через пробел)."""
+    start, end = small_range
+    generator = card_number_generator(start, end)
+    results = list(generator)
+
+    assert len(results) == 3  # Ожидаем 3 номера

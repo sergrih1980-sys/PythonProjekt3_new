@@ -57,3 +57,18 @@ def transactions_with_descriptions():
 def empty_transactions():
     """Фикстура: пустой список транзакций."""
     return []
+
+@pytest.fixture
+def empty_range():
+    """Фикстура: пустой диапазон (start > end)."""
+    return 10, 5
+
+@pytest.fixture
+def large_numbers():
+    """Фикстура: большие числа (близкие к 16‑значному лимиту)."""
+    return 9999999999999997, 9999999999999999
+
+@pytest.fixture
+def small_range():
+    """Фикстура: маленький диапазон (1–3) для базовой проверки."""
+    return 1, 3
