@@ -1,10 +1,13 @@
 import pytest
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
+
+
 from src.generators import (
     filter_by_currency,
     transaction_descriptions,
     card_number_generator
 )
+
 
 def test_filter_by_currency_basic(transactions_basic: List[Dict[str, Any]]) -> None:
     """
@@ -33,6 +36,7 @@ def test_filter_by_currency_parametrized(
     result = list(filtered)
     assert len(result) == expected_count
 
+    # Дополнительная проверка: если есть результаты, убедимся, что валюта совпадает
     if expected_count > 0:
         for item in result:
             assert item["operationAmount"]["currency"]["code"] == currency
