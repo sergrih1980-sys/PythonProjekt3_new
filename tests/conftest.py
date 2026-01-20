@@ -1,15 +1,18 @@
 import pytest
-from typing import List, Dict, Any, Tuple
+from typing import Any, Dict, List, Tuple
+
 
 @pytest.fixture
 def symbol() -> str:
     """Фикстура: строка с маской номера счёта."""
     return "**3456"
 
+
 @pytest.fixture
 def account_empty() -> str:
     """Фикстура: пустая маска счёта."""
     return "**"
+
 
 @pytest.fixture
 def transactions_basic() -> List[Dict[str, Any]]:
@@ -36,6 +39,7 @@ def transactions_basic() -> List[Dict[str, Any]]:
         }
     ]
 
+
 @pytest.fixture
 def single_non_matching_transaction() -> List[Dict[str, Any]]:
     """
@@ -49,6 +53,7 @@ def single_non_matching_transaction() -> List[Dict[str, Any]]:
         }
     ]
 
+
 @pytest.fixture
 def transactions_with_descriptions() -> List[Dict[str, Any]]:
     """Фикстура: транзакции со заполненным полем 'description'."""
@@ -58,10 +63,12 @@ def transactions_with_descriptions() -> List[Dict[str, Any]]:
         {"description": "Перевод другу"}
     ]
 
+
 @pytest.fixture
 def transactions_without_descriptions() -> List[Dict[str, Any]]:
     """Фикстура: транзакции без поля 'description'."""
     return [{}, {"amount": 1000}, {"id": 123, "date": "2023-01-01"}]
+
 
 @pytest.fixture
 def mixed_transactions() -> List[Dict[str, Any]]:
@@ -74,30 +81,36 @@ def mixed_transactions() -> List[Dict[str, Any]]:
         {"description": ""}
     ]
 
+
 @pytest.fixture
 def empty_transactions() -> List[Dict[str, Any]]:
     """Фикстура: пустой список транзакций."""
     return []
+
 
 @pytest.fixture
 def single_transaction_with_description() -> List[Dict[str, Any]]:
     """Фикстура: одна транзакция с описанием."""
     return [{"description": "Единственный платёж"}]
 
+
 @pytest.fixture
 def single_transaction_without_description() -> List[Dict[str, Any]]:
     """Фикстура: одна транзакция без описания."""
     return [{}]
+
 
 @pytest.fixture
 def range_1_to_3() -> Tuple[int, int]:
     """Фикстура: небольшой диапазон (1–3) для базовой проверки формата."""
     return 1, 3
 
+
 @pytest.fixture
 def range_single() -> Tuple[int, int]:
     """Фикстура: диапазон из одного числа (граничный случай)."""
     return 42, 42
+
 
 @pytest.fixture
 def edge_cases() -> List[Tuple[int, int]]:
