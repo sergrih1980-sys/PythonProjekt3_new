@@ -1,7 +1,6 @@
-import pytest
 from typing import Any, Dict, List, Tuple
 
-
+import pytest
 
 
 @pytest.fixture
@@ -22,6 +21,7 @@ def transactions_basic() -> List[Dict[str, Any]]:
     Фикстура: базовый набор транзакций с разными валютами.
     Содержит транзакции в RUB, USD, EUR.
     """
+
     return [
         {
             "operationAmount": {"currency": {"code": "RUB"}},
@@ -48,6 +48,7 @@ def single_non_matching_transaction() -> List[Dict[str, Any]]:
     Фикстура: одна транзакция с валютой, не совпадающей с целевой.
     Используется для проверки фильтрации.
     """
+
     return [
         {
             "operationAmount": {"currency": {"code": "USD"}},
