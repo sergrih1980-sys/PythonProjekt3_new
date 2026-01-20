@@ -124,9 +124,9 @@ transactions = [
     }
 ]
 
-filtered = filter_by_currency(transactions, "RUB")
+`filtered = filter_by_currency(transactions, "RUB")
 for transaction in filtered:
-    print(transaction)
+    print(transaction)`
 Пояснение
 
 Создаётся список transactions, содержащий две транзакции:
@@ -135,27 +135,27 @@ for transaction in filtered:
 
 вторая — в долларах США ("USD").
 
-Вызывается функция filter_by_currency():
+Вызывается функция `filter_by_currency():`
 
-аргумент transactions — исходный список транзакций;
+аргумент `transactions` — исходный список транзакций;
 
 аргумент "RUB" — код валюты для фильтрации.
 
-Результат (объект filter) сохраняется в переменную filtered.
+Результат (объект `filter`) сохраняется в переменную filtered.
 
 В цикле for выводятся отфильтрованные транзакции.
 
 Результат выполнения
 На экран будет выведена только транзакция с валютой RUB:
 
-python
+`python`
 {
-    'operationAmount': {
+    `'operationAmount': {
         'currency': {
             'code': 'RUB'
         }
     },
-    'description': 'Покупка в магазине'
+    'description': 'Покупка в магазине'`
 }
 
 ## `transaction_descriptions(transactions)`
@@ -165,17 +165,17 @@ python
 
 **Синтаксис**
 ```python```
-def transaction_descriptions(transactions):
+`def transaction_descriptions(transactions):`
     """
     Генератор, возвращающий описания транзакций по очереди.
     """
-    for transaction in transactions:
+    `for transaction in transactions:`
         # Безопасное получение описания: если ключа нет — возвращаем пустую строку
-        description = transaction.get('description', '')
-        yield description
+        `description = transaction.get('description', '')
+        yield description`
 
 # Пример списка транзакций
-transactions = [
+`transactions` = [
     {'description': 'Покупка продуктов'},
     {'amount': 1000},  # Нет поля 'description'
     {'description': 'Оплата интернета'},
@@ -194,25 +194,103 @@ for desc in transaction_descriptions(transactions):
 
 **Синтаксис**
 ```python```
-def card_number_generator(start, end):
+`def card_number_generator(start, end):
     """
     Генератор номеров банковских карт в формате XXXX XXXX XXXX XXXX.
     """
-    for num in range(start, end + 1):
+    for num in range(start, end + 1):`
         # Формируем 16‑значный номер с нулями слева
-        padded = str(num).zfill(16)
+        `padded = str(num).zfill(16)`
         # Разбиваем на группы по 4 цифры
-        yield f"{padded[:4]} {padded[4:8]} {padded[8:12]} {padded[12:16]}"
+        `yield f"{padded[:4]} {padded[4:8]} {padded[8:12]} {padded[12:16]}"`
 
 ## Пример использования генератора `card_number_generator`
 
 **Код примера**
 ```python```
-for card_number in card_number_generator(1, 3):
-    print(card_number)
+`for card_number in card_number_generator(1, 3):
+    print(card_number)`
 
 ### Результат выполнения (вывод)
 
 0000 0000 0000 0001
 0000 0000 0000 0002
 0000 0000 0000 0003
+
+## Тестирование  модуля generators
+
+Документация по автоматизированным тестам для модуля generators, который работает с финансовыми данными.
+
+1. Назначение
+### Документ описывает набор автоматизированных тестов, которые:
+
+- Фильтруют транзакции по валюте;
+- Генерируют описания операций;
+- Формируют номера банковских карт по шаблону.
+- 
+2. Тестируемые функции
+### В тестировании участвуют:
+
+- `filter_by_currency()`
+- `transaction_descriptions()`
+- `card_number_generator()`
+- 
+3. Структура тестового набора
+Расположение: `tests/test_generators.py`
+
+Фреймворк: `pytest` (обеспечивает):
+
+- Запуск тестов;
+- Параметризацию сценариев;
+- Формирование отчётов.
+Фикстуры (тестовые данные): `tests/conftest.py`
+
+4. Описание функций
+4.1. `filter_by_currency()`
+Что делает: фильтрует транзакции по коду валюты.
+
+Входные данные:
+
+`transactions (List[Dict])`: список транзакций;
+`currency_code (str)`: код валюты.
+Выходные данные: итератор отфильтрованных транзакций.
+
+## Пример использования 
+
+`result = filter_by_currency(transactions, "RUB")`
+4.2. `transaction_descriptions()`
+Что делает: последовательно выдаёт описания транзакций.
+
+Входные данные:
+
+`transactions` (List[Dict]): список транзакций.
+Выходные данные: генератор строк (Generator[str, None, None]).
+
+### Особенности:
+
+Если поле `description` отсутствует, возвращает пустую строку;
+Использует yield для ленивой генерации (экономия памяти при обработке больших наборов данных).
+4.3. card_number_generator()
+Что делает: создаёт номера карт в формате XXXX XXXX XXXX XXXX.
+
+Входные данные:
+
+`start (int):` `начало диапазона;
+`end (int):` конец диапазона (включительно).
+Выходные данные: генератор строк (Generator[str, None, None]).
+
+## Алгоритм работы:
+
+- Каждое число из диапазона [start, end] преобразуется в строку и дополняется нулями до 16 символов (используя zfill(16)).
+- Строка разбивается на 4 группы по 4 символа.
+- Группы соединяются пробелами.
+- Результат выдаётся через yield.
+## Пример вывода:
+
+0000 0000 0000 1234
+0000 0000 0000 1235
+...
+Пример вызова:
+
+`for card in card_number_generator(1234, 1236):
+    print(card)`
