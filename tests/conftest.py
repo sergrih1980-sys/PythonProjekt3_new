@@ -1,18 +1,22 @@
 import pytest
-
+from typing import List, Dict, Any, Tuple
 
 @pytest.fixture
 def symbol() -> str:
+    """Фикстура: строка с маской номера счёта."""
     return "**3456"
-
 
 @pytest.fixture
 def account_empty() -> str:
+    """Фикстура: пустая маска счёта."""
     return "**"
 
-# Фикстура: базовый набор транзакций с разными валютами
 @pytest.fixture
-def transactions_basic():
+def transactions_basic() -> List[Dict[str, Any]]:
+    """
+    Фикстура: базовый набор транзакций с разными валютами.
+    Содержит транзакции в RUB, USD, EUR.
+    """
     return [
         {
             "operationAmount": {"currency": {"code": "RUB"}},
@@ -31,44 +35,76 @@ def transactions_basic():
             "description": "Онлайн‑покупка"
         }
     ]
-# Фикстура: одна транзакция с другой валютой
+
 @pytest.fixture
-def single_non_matching_transaction():
+def single_non_matching_transaction() -> List[Dict[str, Any]]:
+    """
+    Фикстура: одна транзакция с валютой, не совпадающей с целевой.
+    Используется для проверки фильтрации.
+    """
     return [
         {
             "operationAmount": {"currency": {"code": "USD"}},
             "id": 2
         }
     ]
-# Фикстура: пустой список транзакций
-@pytest.fixture
-def empty_transactions():
-    return []
 
 @pytest.fixture
-def transactions_with_descriptions():
+def transactions_with_descriptions() -> List[Dict[str, Any]]:
     """Фикстура: транзакции со заполненным полем 'description'."""
     return [
         {"description": "Покупка продуктов"},
         {"description": "Оплата интернета"},
         {"description": "Перевод другу"}
     ]
+
 @pytest.fixture
-def empty_transactions():
+def transactions_without_descriptions() -> List[Dict[str, Any]]:
+    """Фикстура: транзакции без поля 'description'."""
+    return [{}, {"amount": 1000}, {"id": 123, "date": "2023-01-01"}]
+
+@pytest.fixture
+def mixed_transactions() -> List[Dict[str, Any]]:
+    """Фикстура: смешанный набор транзакций (с описанием и без)."""
+    return [
+        {"description": "Зарплата"},
+        {},
+        {"description": "Кафе"},
+        {"category": "Развлечения"},
+        {"description": ""}
+    ]
+
+@pytest.fixture
+def empty_transactions() -> List[Dict[str, Any]]:
     """Фикстура: пустой список транзакций."""
     return []
 
 @pytest.fixture
-def empty_range():
-    """Фикстура: пустой диапазон (start > end)."""
-    return 10, 5
+def single_transaction_with_description() -> List[Dict[str, Any]]:
+    """Фикстура: одна транзакция с описанием."""
+    return [{"description": "Единственный платёж"}]
 
 @pytest.fixture
-def large_numbers():
-    """Фикстура: большие числа (близкие к 16‑значному лимиту)."""
-    return 9999999999999997, 9999999999999999
+def single_transaction_without_description() -> List[Dict[str, Any]]:
+    """Фикстура: одна транзакция без описания."""
+    return [{}]
 
 @pytest.fixture
-def small_range():
-    """Фикстура: маленький диапазон (1–3) для базовой проверки."""
+def range_1_to_3() -> Tuple[int, int]:
+    """Фикстура: небольшой диапазон (1–3) для базовой проверки формата."""
     return 1, 3
+
+@pytest.fixture
+def range_single() -> Tuple[int, int]:
+    """Фикстура: диапазон из одного числа (граничный случай)."""
+    return 42, 42
+
+@pytest.fixture
+def edge_cases() -> List[Tuple[int, int]]:
+    """Фикстура: набор граничных случаев для параметризации."""
+    return [
+        (1, 1),
+        (0, 0),
+        (9999999999999999, 9999999999999999),
+        (10000000000000000, 10000000000000000)
+    ]
