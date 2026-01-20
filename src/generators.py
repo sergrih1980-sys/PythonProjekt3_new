@@ -2,6 +2,7 @@ from typing import List, Dict, Any, Iterator
 from typing import Generator
 
 def filter_by_currency(spisok: List[Dict[str, Any]], valuta: str) -> Iterator[Dict[str, Any]]:
+
     """
     Функция принимает список транзакций (словари) и код валюты,
     возвращает объект filter, содержащий только транзакции, где код валюты
@@ -29,7 +30,5 @@ def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
     for num in range(start, end + 1):
         padded = str(num).zfill(16)
         yield f"{padded[:4]} {padded[4:8]} {padded[8:12]} {padded[12:16]}"
-
-
 
 
