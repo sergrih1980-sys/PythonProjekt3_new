@@ -79,7 +79,7 @@
 - `tests/test_widget.py` — тесты для модуля `widget`;
 - `tests/test_processing.py` — тесты для модуля `processing`.
 
-# Финансовый инструментарий: обработка транзакций и генерация номеров карт
+### Финансовый инструментарий: обработка транзакций и генерация номеров карт
 
 ## `filter_by_currency(spisok, valuta)`
 
@@ -229,7 +229,7 @@ for desc in transaction_descriptions(transactions):
 - Формируют номера банковских карт по шаблону.
 - 
 2. Тестируемые функции
-### В тестировании участвуют:
+## В тестировании участвуют:
 
 - `filter_by_currency()`
 - `transaction_descriptions()`
