@@ -119,6 +119,7 @@ def edge_cases() -> List[Tuple[int, int]]:
         (10000000000000000, 10000000000000000)
     ]
 
+
 @pytest.fixture
 def empty_range() -> Tuple[int, int]:
     """Фикстура: пустой диапазон (например, 10, 9)."""
