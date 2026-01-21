@@ -13,6 +13,7 @@ def test_filter_by_currency_basic(transactions_basic: List[Dict[str, Any]]) -> N
     assert len(result) == 2
     assert all(t["operationAmount"]["currency"]["code"] == "RUB" for t in result)
 
+
 test_cases = [
     (
         [
@@ -112,3 +113,37 @@ def test_format_correctness(small_range: Tuple[int, int]) -> None:
         for part in parts:
             assert len(part) == 4, "Каждая группа должна содержать 4 цифры"
             assert part.isdigit(), "Все символы должны быть цифрами"
+
+
+def test_transaction_descriptions_empty_list() -> None:
+    transactions: List[Dict[str, Any]] = []
+    result = list(transaction_descriptions(transactions))
+    assert result == []
+
+
+def test_transaction_descriptions_edge_cases() -> None:
+    transactions: List[Dict[str, Any]] = [
+        {"description": ""},           # пустая строка
+        {"description": 0},          # число
+        {"description": False},       # булево
+        {"other_key": "value"}       # нет ключа 'description'
+    ]
+    result = list(transaction_descriptions(transactions))
+    assert result == ["", "0", "False", ""]
+
+
+def test_transaction_descriptions_non_dict_items() -> None:
+    transactions = ["не словарь", 123, None]
+    with pytest.raises(AttributeError):
+        list(transaction_descriptions(transactions))  # type: ignore
+
+
+def test_transaction_descriptions_invalid_dict_values() -> None:
+    transactions: List[Dict[str, Any]] = [
+            {"description": 123},  # число вместо строки
+            {"description": None},  # None вместо строки
+            {"description": ""},  # пустая строка
+            {"amount": 1000}  # нет ключа 'description'
+        ]
+    result = list(transaction_descriptions(transactions))
+    assert result == ["123", "None", "", ""]
