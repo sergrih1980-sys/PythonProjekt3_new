@@ -154,3 +154,26 @@ def test_negative_range_behavior() -> None:
     generator = card_number_generator(1000, 999)
     results = list(generator)
     assert len(results) == 0, "Генератор должен возвращать пустой список при отрицательном диапазоне"
+
+
+def test_transaction_descriptions_no_description_key() -> None:
+    """
+    Тест: транзакции без ключа 'description'.
+    Ожидаем: пустые строки для каждой транзакции.
+    """
+    transactions = [
+        {"id": 1, "amount": 100},
+        {},
+        {"status": "completed"}
+    ]
+    result = list(transaction_descriptions(transactions))
+    assert result == ["", "", ""]
+
+def test_transaction_descriptions_non_dict_items() -> None:
+    """
+    Тест: элементы списка — не словари.
+    Ожидаем: AttributeError (т.к. .get() недоступен для не-словарей).
+    """
+    transactions = ["не словарь", 123, None]
+    with pytest.raises(AttributeError):
+        list(transaction_descriptions(transactions))
