@@ -18,8 +18,9 @@ def transaction_descriptions(transactions: List[Dict[str, Any]]) -> Generator[st
     Генератор, возвращающий описания транзакций по очереди.
     """
     for transaction in transactions:
-        description = transaction.get('description', '')
-        yield description
+        description = transaction.get("description", "")
+        # Приводим к строке, даже если это число/None/False
+        yield str(description) if description is not None else ""
 
 
 def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
