@@ -129,15 +129,16 @@ def test_transaction_descriptions_no_description_key() -> None:  # ← толь�
 
 def test_transaction_descriptions_non_dict_items() -> None:
     transactions = ["не словарь", 123, None]
+
     with pytest.raises(AttributeError):
         list(transaction_descriptions(transactions))  # type: ignore
 
-def test_transaction_descriptions_mixed_cases() -> None:
-    transactions = [
-        {"description": "Зарплата"},
-        {"id": 42},
-        {"description": ""},
-        {"description": "Квитанция ЖКХ"}
-    ]
-    result = list(transaction_descriptions(transactions))
-    assert result == ["Зарплата", "", "", "Квитанция ЖКХ"]
+def test_transaction_descriptions_invalid_dict_values() -> None:
+        transactions: List[Dict[str, Any]] = [
+            {"description": 123},  # число вместо строки
+            {"description": None},  # None вместо строки
+            {"description": ""},  # пустая строка
+            {"amount": 1000}  # нет ключа 'description'
+        ]
+        result = list(transaction_descriptions(transactions))
+        assert result == ["123", "None", "", ""]
