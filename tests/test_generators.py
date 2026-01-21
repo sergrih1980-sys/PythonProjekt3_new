@@ -129,19 +129,22 @@ def test_filter_by_currency_incomplete_data() -> None:
     assert len(result) == 1  # только первая транзакция подходит
     assert result[0]["operationAmount"]["currency"]["code"] == "RUB"
 
+
 def test_transaction_descriptions_missing_description() -> None:
-        """
-        Тест: транзакции без поля description не включаются в результат.
-        """
-        transactions = [
-            {"description": "Платёж 1"},
-            {},  # нет description
-            {"description": "Платёж 2"},
-            {"other_field": "value"},  # нет description
-        ]
-        result = list(transaction_descriptions(transactions))
-        expected = ["Платёж 1", "Платёж 2"]
-        assert result == expected
+    """
+    Тест: транзакции без поля description не включаются в результат.
+    """
+    transactions = [
+        {"description": "Платёж 1"},
+        {},  # нет description
+        {"description": "Платёж 2"},
+        {"other_field": "value"},  # нет description
+    ]
+    result = list(transaction_descriptions(transactions))
+    expected = ["Платёж 1", "Платёж 2"]
+    assert result == expected
+
+
 
 def test_negative_range_behavior() -> None:
     """
