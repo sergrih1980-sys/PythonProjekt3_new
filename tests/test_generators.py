@@ -112,3 +112,41 @@ def test_format_correctness(small_range: Tuple[int, int]) -> None:
         for part in parts:
             assert len(part) == 4, "Каждая группа должна содержать 4 цифры"
             assert part.isdigit(), "Все символы должны быть цифрами"
+
+
+def test_filter_by_currency_incomplete_data() -> None:
+    """
+    Тест: фильтрация при неполных данных (отсутствует currency или operationAmount).
+    Ожидаем: такие транзакции игнорируются.
+    """
+    transactions = [
+        {"operationAmount": {"currency": {"code": "RUB"}}},  # полный
+        {"operationAmount": {}},  # нет currency
+        {},  # нет operationAmount
+        {"operationAmount": {"currency": {}}},  # нет code
+    ]
+    result = list(filter_by_currency(transactions, "RUB"))
+    assert len(result) == 1  # только первая транзакция подходит
+    assert result[0]["operationAmount"]["currency"]["code"] == "RUB"
+
+def test_transaction_descriptions_missing_description() -> None:
+        """
+        Тест: транзакции без поля description не включаются в результат.
+        """
+        transactions = [
+            {"description": "Платёж 1"},
+            {},  # нет description
+            {"description": "Платёж 2"},
+            {"other_field": "value"},  # нет description
+        ]
+        result = list(transaction_descriptions(transactions))
+        expected = ["Платёж 1", "Платёж 2"]
+        assert result == expected
+
+def test_negative_range_behavior() -> None:
+    """
+    Тест: если start > end, генератор не должен выдавать значений.
+    """
+    generator = card_number_generator(1000, 999)
+    results = list(generator)
+    assert len(results) == 0, "Генератор должен возвращать пустой список при отрицательном диапазоне"
