@@ -132,17 +132,15 @@ def filter_by_currency(
                 yield t
 
 
-def transaction_descriptions(
-    transactions: List[Dict[str, Any]]
-) -> Iterator[str]:
-   for t in transactions:
-        if (
-            isinstance(t, dict) and
-            "description" in t and
-            isinstance(t["description"], str) and
-            t["description"]  # не пустая строка (опционально)
-        ):
-            yield t["description"]
+def test_transaction_descriptions_no_description_key() -> None:
+    transactions = [
+        {"id": 1, "amount": 100},
+        {},
+        {"status": "completed"}
+    ]
+    result = list(transaction_descriptions(transactions))
+    assert result == ["", "", ""]
+
 
 
 
@@ -169,6 +167,7 @@ def test_transaction_descriptions_no_description_key() -> None:
     result = list(transaction_descriptions(transactions))
     assert result == ["", "", ""]
 
+
 def test_transaction_descriptions_non_dict_items() -> None:
     """
     Тест: элементы списка — не словари.
@@ -176,4 +175,4 @@ def test_transaction_descriptions_non_dict_items() -> None:
     """
     transactions = ["не словарь", 123, None]
     with pytest.raises(AttributeError):
-        list(transaction_descriptions(transactions))
+        list(transaction_descriptions(transactions))  # type: ignore
