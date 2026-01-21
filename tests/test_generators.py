@@ -130,12 +130,13 @@ def test_transaction_descriptions_edge_cases() -> None:
     result = list(transaction_descriptions(transactions))
     assert result == ["", "0", "False", ""]
 
+
 def test_transaction_descriptions_non_dict_items() -> None:
     transactions = ["не словарь", 123, None]
 
-
     with pytest.raises(AttributeError):
         list(transaction_descriptions(transactions))  # type: ignore
+
 
 def test_transaction_descriptions_invalid_dict_values() -> None:
     transactions: List[Dict[str, Any]] = [
