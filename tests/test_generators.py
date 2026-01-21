@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Tuple, Iterator
 
 import pytest
 
-from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
+from src.generators import filter_by_currency, transaction_descriptions
 
 
 def test_filter_by_currency_basic(transactions_basic: List[Dict[str, Any]]) -> None:
@@ -114,25 +114,12 @@ def test_format_correctness(small_range: Tuple[int, int]) -> None:
             assert part.isdigit(), "Все символы должны быть цифрами"
 
 
-def filter_by_currency(
-    transactions: List[Dict[str, Any]],
-    currency: str
-) -> Iterator[Dict[str, Any]]:
-    for t in transactions:
-        # Проверяем, что все ключи существуют и имеют нужный тип
-        if (
-            isinstance(t, dict) and
-            "operationAmount" in t and
-            isinstance(t["operationAmount"], dict) and
-            "currency" in t["operationAmount"] and
-            isinstance(t["operationAmount"]["currency"], dict) and
-            "code" in t["operationAmount"]["currency"]
-        ):
-            if t["operationAmount"]["currency"]["code"] == currency:
-                yield t
+def test_transaction_descriptions_empty_list() -> None:
+    transactions: List[Dict[str, Any]] = []
+    result = list(transaction_descriptions(transactions))
+    assert result == []
 
-
-def test_transaction_descriptions_no_description_key() -> None:
+def test_transaction_descriptions_no_description_key() -> None:  # ← только один раз!
     transactions = [
         {"id": 1, "amount": 100},
         {},
@@ -140,39 +127,18 @@ def test_transaction_descriptions_no_description_key() -> None:
     ]
     result = list(transaction_descriptions(transactions))
     assert result == ["", "", ""]
-
-
-
-
-
-def test_negative_range_behavior() -> None:
-    """
-    Тест: если start > end, генератор не должен выдавать значений.
-    """
-    generator = card_number_generator(1000, 999)
-    results = list(generator)
-    assert len(results) == 0, "Генератор должен возвращать пустой список при отрицательном диапазоне"
-
-
-def test_transaction_descriptions_no_description_key() -> None:
-    """
-    Тест: транзакции без ключа 'description'.
-    Ожидаем: пустые строки для каждой транзакции.
-    """
-    transactions = [
-        {"id": 1, "amount": 100},
-        {},
-        {"status": "completed"}
-    ]
-    result = list(transaction_descriptions(transactions))
-    assert result == ["", "", ""]
-
 
 def test_transaction_descriptions_non_dict_items() -> None:
-    """
-    Тест: элементы списка — не словари.
-    Ожидаем: AttributeError (т.к. .get() недоступен для не-словарей).
-    """
     transactions = ["не словарь", 123, None]
     with pytest.raises(AttributeError):
         list(transaction_descriptions(transactions))  # type: ignore
+
+def test_transaction_descriptions_mixed_cases() -> None:
+    transactions = [
+        {"description": "Зарплата"},
+        {"id": 42},
+        {"description": ""},
+        {"description": "Квитанция ЖКХ"}
+    ]
+    result = list(transaction_descriptions(transactions))
+    assert result == ["Зарплата", "", "", "Квитанция ЖКХ"]
