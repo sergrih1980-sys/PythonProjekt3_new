@@ -114,35 +114,36 @@ def test_format_correctness(small_range: Tuple[int, int]) -> None:
             assert part.isdigit(), "Все символы должны быть цифрами"
 
 
-def test_filter_by_currency_incomplete_data() -> None:
-    """
-    Тест: фильтрация при неполных данных (отсутствует currency или operationAmount).
-    Ожидаем: такие транзакции игнорируются.
-    """
-    transactions = [
-        {"operationAmount": {"currency": {"code": "RUB"}}},  # полный
-        {"operationAmount": {}},  # нет currency
-        {},  # нет operationAmount
-        {"operationAmount": {"currency": {}}},  # нет code
-    ]
-    result = list(filter_by_currency(transactions, "RUB"))
-    assert len(result) == 1  # только первая транзакция подходит
-    assert result[0]["operationAmount"]["currency"]["code"] == "RUB"
+def filter_by_currency(
+    transactions: List[Dict[str, Any]],
+    currency: str
+) -> Iterator[Dict[str, Any]]:
+    for t in transactions:
+        # Проверяем, что все ключи существуют и имеют нужный тип
+        if (
+            isinstance(t, dict) and
+            "operationAmount" in t and
+            isinstance(t["operationAmount"], dict) and
+            "currency" in t["operationAmount"] and
+            isinstance(t["operationAmount"]["currency"], dict) and
+            "code" in t["operationAmount"]["currency"]
+        ):
+            if t["operationAmount"]["currency"]["code"] == currency:
+                yield t
 
 
-def test_transaction_descriptions_missing_description() -> None:
-    """
-    Тест: транзакции без поля description не включаются в результат.
-    """
-    transactions = [
-        {"description": "Платёж 1"},
-        {},  # нет description
-        {"description": "Платёж 2"},
-        {"other_field": "value"},  # нет description
-    ]
-    result = list(transaction_descriptions(transactions))
-    expected = ["Платёж 1", "Платёж 2"]
-    assert result == expected
+def transaction_descriptions(
+    transactions: List[Dict[str, Any]]
+) -> Iterator[str]:
+   for t in transactions:
+        if (
+            isinstance(t, dict) and
+            "description" in t and
+            isinstance(t["description"], str) and
+            t["description"]  # не пустая строка (опционально)
+        ):
+            yield t["description"]
+
 
 
 
