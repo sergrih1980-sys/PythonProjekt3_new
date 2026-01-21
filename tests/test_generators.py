@@ -118,14 +118,15 @@ def test_transaction_descriptions_empty_list() -> None:
     result = list(transaction_descriptions(transactions))
     assert result == []
 
-def test_transaction_descriptions_no_description_key() -> None:  # ← только один раз!
-    transactions = [
-        {"id": 1, "amount": 100},
-        {},
-        {"status": "completed"}
+def test_transaction_descriptions_edge_cases() -> None:
+    transactions: List[Dict[str, Any]] = [
+        {"description": ""},           # пустая строка
+        {"description": 0},          # число
+        {"description": False},       # булево
+        {"other_key": "value"}       # нет ключа 'description'
     ]
     result = list(transaction_descriptions(transactions))
-    assert result == ["", "", ""]
+    assert result == ["", "0", "False", ""]
 
 def test_transaction_descriptions_non_dict_items() -> None:
     transactions = ["не словарь", 123, None]
