@@ -2,6 +2,7 @@ from typing import List, Dict, Any, Tuple
 import pytest
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 
+
 def test_filter_by_currency_basic(transactions_basic: List[Dict[str, Any]]) -> None:
     """
     Тест базовой работы filter_by_currency с предопределённым набором транзакций.
@@ -117,6 +118,7 @@ def test_transaction_descriptions_empty_list() -> None:
     result = list(transaction_descriptions(transactions))
     assert result == []
 
+
 def test_transaction_descriptions_edge_cases() -> None:
     transactions: List[Dict[str, Any]] = [
         {"description": ""},           # пустая строка
@@ -124,11 +126,13 @@ def test_transaction_descriptions_edge_cases() -> None:
         {"description": False},       # булево
         {"other_key": "value"}       # нет ключа 'description'
     ]
+
     result = list(transaction_descriptions(transactions))
     assert result == ["", "0", "False", ""]
 
 def test_transaction_descriptions_non_dict_items() -> None:
     transactions = ["не словарь", 123, None]
+
 
     with pytest.raises(AttributeError):
         list(transaction_descriptions(transactions))  # type: ignore
