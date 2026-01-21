@@ -1,8 +1,7 @@
-from typing import Any, Dict, List, Tuple, Iterator
-
+from typing import List, Dict, Any
 import pytest
-
 from src.generators import filter_by_currency, transaction_descriptions
+
 
 
 def test_filter_by_currency_basic(transactions_basic: List[Dict[str, Any]]) -> None:
