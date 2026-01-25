@@ -10,8 +10,11 @@ def log(filename=None):
             try:
                 result = func(*args, **kwargs)
                 # Формируем сообщение о успешном выполнении
-                log_message = f"Function {func.__name__} OK. Result: {repr(result)}. Args: {repr(args)}, Kwargs: {repr(kwargs)}"
-
+                log_message = (
+                    f"Function {func.__name__} OK. "
+                    f"Result: {repr(result)}. "
+                    f"Args: {repr(args)}, Kwargs: {repr(kwargs)}"
+                )
                 if filename:
                     with open(filename, "a", encoding="utf-8") as f:
                         f.write(log_message + "\n")
