@@ -17,16 +17,16 @@ def log(filename=None):
                         f.write(log_message + "\n")
                 else:
                     print(log_message)
-                return result  # возвращаем результат
+                return result  # возвращаем результат!
 
             except Exception as e:
                 # Формируем сообщение об ошибке
                 error_msg = (
-                    f"Function {func.__name__} ERROR. "
-                    f!Type: {type(e).__name__}, "
-                f!Message: {e}, "
-                f!Args: {repr(args)}, "
-                                      f"Kwargs: {repr(kwargs)}"
+                f"Function {func.__name__} ERROR. "
+                f"Type: {type(e).__name__}, "
+                f"Message: {e}, "
+                f"Args: {repr(args)}, "
+                f"Kwargs: {repr(kwargs)}"
                 )
                 if filename:
                     with open(filename, "a", encoding="utf-8") as f:
@@ -52,7 +52,7 @@ def fail():
     raise ValueError("Пример ошибки")
 
 
-" Тестируем
+" Тестируем "
 print(add(1, 2))  # → 3
 print(add(5, 7))  # → 12
 fail()  # Выведет ошибку в консоль
