@@ -25,11 +25,11 @@ def log(filename=None):
             except Exception as e:
                 # Формируем сообщение об ошибке
                 error_msg = (
-                f"Function {func.__name__} ERROR. "
-                f"Type: {type(e).__name__}, "
-                f"Message: {e}, "
-                f"Args: {repr(args)}, "
-                f"Kwargs: {repr(kwargs)}"
+                 f"Function {func.__name__} ERROR. "
+                 f"Type: {type(e).__name__}, "
+                 f"Message: {e}, "
+                 f"Args: {repr(args)}, "
+                 f"Kwargs: {repr(kwargs)}"
                 )
                 if filename:
                     with open(filename, "a", encoding="utf-8") as f:
