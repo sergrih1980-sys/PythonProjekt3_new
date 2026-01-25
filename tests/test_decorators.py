@@ -47,20 +47,3 @@ def test_no_args_no_kwargs(self, capsys):
     captured = capsys.readouterr()
     assert "Args: ()" in captured.out
     assert "Kwargs: {}" in captured.out
-
- # Пример использования
-   @log("log.txt")  # Логи в файл
-def add(x, y):
-    """Функция складывает аргументы полученные на вход"""
-    return x + y
-
-
-   @log()  # Логи в консоль
-def fail():
-    raise ValueError("Пример ошибки")
-
-
-" Тестируем "
-print(add(1, 2))  # → 3
-print(add(5, 7))  # → 12
-fail()  # Выведет ошибку в консоль
