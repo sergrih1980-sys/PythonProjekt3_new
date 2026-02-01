@@ -9,7 +9,6 @@ API_URL = "https://api.apilayer.com/exchangerates_data/convert?to={to}&from={fro
 load_dotenv()
 
 def currency_conversion(transaction: dict) -> float:
-    """ Конвертируем валюту через API и возвращаем его """
     amount = transaction.get("operationAmount", {}).get("amount")
     currency = transaction.get("operationAmount", {}).get("currency", {}).get("code")
 
@@ -18,7 +17,8 @@ def currency_conversion(transaction: dict) -> float:
     elif currency in ["USD", "EUR"]:
         try:
             response = requests.get(
-                API_URL.format(to="RUB", from_="currency", amount=amount), headers={"apikey": API_KEY}
+                API_URL.format(to="RUB", from_=currency, amount=amount),
+                headers={"apikey": API_KEY}
             )
             if response.status_code == 200:
                 data = response.json()
