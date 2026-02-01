@@ -3,7 +3,6 @@ from unittest.mock import patch, MagicMock
 import requests
 from src.external_api import currency_conversion
 
-
 class TestCurrencyConversion(unittest.TestCase):
 
     def setUp(self):
@@ -32,9 +31,8 @@ class TestCurrencyConversion(unittest.TestCase):
         self.mock_success.status_code = 200
         self.mock_success.json.return_value = {"result": 4850.5}
 
-    @patch('src.external_api.currency_converter.requests.get')
+    @patch('src.external_api.currency_conversion.requests.get')
     def test_usd_conversion_success(self, mock_get):
-        # Настраиваем мок внутри теста
         mock_get.return_value = self.mock_success
 
         result = currency_conversion(self.transaction_usd)
@@ -44,31 +42,27 @@ class TestCurrencyConversion(unittest.TestCase):
         expected_url = "https://api.apilayer.com/exchangerates_data/convert?to=RUB&from=USD&amount=50.0"
         mock_get.assert_called_with(expected_url, headers={"apikey": "mocked_api_key"})
 
-    @patch('src.external_api.currency_converter.requests.get')
+
+    @patch('src.external_api.currency_conversion.requests.get')
     def test_eur_conversion_success(self, mock_get):
-        """EUR → успешный ответ API, возвращаем result"""
-        # Настраиваем мок внутри теста
         mock_get.return_value = self.mock_success
 
         result = currency_conversion(self.transaction_eur)
         self.assertEqual(result, self.mock_success.json.return_value["result"])
         mock_get.assert_called_once()
 
-    @patch('src.external_api.currency_converter.requests.get')
+    @patch('src.external_api.currency_conversion.requests.get')
     def test_unsupported_currency_returns_zero(self, mock_get):
-        """Неподдерживаемая валюта (GBP) → 0.0, API не вызывается"""
         result = currency_conversion(self.transaction_gbp)
         self.assertEqual(result, 0.0)
         mock_get.assert_not_called()
 
-    @patch('src.external_api.currency_converter.requests.get')
+    @patch('src.external_api.currency_conversion.requests.get')
     def test_api_request_exception_returns_zero(self, mock_get):
-        """Исключение при запросе → 0.0"""
         mock_get.side_effect = requests.exceptions.RequestException("Connection failed")
         result = currency_conversion(self.transaction_usd)
         self.assertEqual(result, 0.0)
         mock_get.assert_called_once()
-
 
 if __name__ == '__main__':
     unittest.main()
