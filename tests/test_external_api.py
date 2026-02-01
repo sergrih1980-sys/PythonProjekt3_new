@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 import requests
 from src.external_api import currency_conversion
+import requests
 
 
 class TestCurrencyConversion(unittest.TestCase):
