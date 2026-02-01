@@ -32,6 +32,3 @@ def currency_conversion(transaction: dict) -> float:
             return 0.0
     else:
         return 0.0
-
-
-
