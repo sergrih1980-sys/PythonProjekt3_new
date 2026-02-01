@@ -3,8 +3,6 @@ from unittest.mock import patch, mock_open
 import json
 from src.utils import load_financial_operations
 
-
-
 class TestMyClass(unittest.TestCase):
 
     def setUp(self):
@@ -21,7 +19,6 @@ class TestMyClass(unittest.TestCase):
     def test_load_successful(self, mock_isfile, mock_file):
         mock_isfile.return_value = True
         mock_file.return_value.read.return_value = json.dumps(self.valid_data)
-
 
         result = load_financial_operations("test.json")
         self.assertEqual(result, self.valid_data)
@@ -59,7 +56,6 @@ class TestMyClass(unittest.TestCase):
     def test_non_list_root(self, mock_isfile, mock_file):
         mock_isfile.return_value = True
         mock_file.return_value.read.return_value = self.invalid_json
-
 
         result = load_financial_operations("not_a_list.json")
         self.assertEqual(result, [])
