@@ -2,11 +2,11 @@ import os
 import requests
 from dotenv import load_dotenv
 
-
 API_KEY = os.getenv("API_KEY")
 API_URL =  "https://api.apilayer.com/exchangerates_data/convert?to={to}&from_={from_}&amount={amount}"
 
 load_dotenv()
+
 
 def currency_conversion(transaction: dict) -> float:
     amount = transaction.get("operationAmount", {}).get("amount")
