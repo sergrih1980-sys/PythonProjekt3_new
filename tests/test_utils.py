@@ -11,20 +11,21 @@ class TestMyClass(unittest.TestCase):
             {"id": 1, "amount": 100.0, "currency": "RUB"},
             {"id": 2, "amount": 200.0, "currency": "USD"}
         ]
-        self.invalid_json = '{"key": "value"}'
-        self.corrupted_json = '{"missing": "comma"}'
+        self.invalid_json = '{"key": "value"}'  # не список
+        self.corrupted_json = '{"missing": "comma"}'  # синтаксическая ошибка
 
     @patch('builtins.open', new_callable=mock_open)
     @patch('os.path.isfile')
     def test_load_successful(self, mock_file, mock_isfile):
+        # Настраиваем мок как контекстный менеджер
         mock_file.return_value.__enter__.return_value.read.return_value = json.dumps(self.valid_data)
         mock_isfile.return_value = True
 
         result = load_financial_operations("test.json")
         self.assertEqual(result, self.valid_data)
+
         mock_isfile.assert_called_with("test.json")
         mock_file.assert_called_with("test.json", "r", encoding="utf-8")
-
 
     @patch('os.path.isfile')
     def test_file_not_found(self, mock_isfile):
@@ -33,41 +34,52 @@ class TestMyClass(unittest.TestCase):
         self.assertEqual(result, [])
         mock_isfile.assert_called_with("nonexistent.json")
 
-
     @patch('builtins.open')
     @patch('os.path.isfile')
     def test_io_error_on_open(self, mock_file, mock_isfile):
         mock_isfile.return_value = True
+        # Имитируем IOError при открытии файла
         mock_file.side_effect = IOError("Permission denied")
+
+        # Функция должна вернуть [] при ошибке
         result = load_financial_operations("broken.json")
         self.assertEqual(result, [])
+
         mock_isfile.assert_called_with("broken.json")
         mock_file.assert_called_with("broken.json", "r", encoding="utf-8")
 
     @patch('builtins.open', new_callable=mock_open)
     @patch('os.path.isfile')
     def test_json_decode_error(self, mock_file, mock_isfile):
+        # Настраиваем чтение некорректного JSON
         mock_file.return_value.__enter__.return_value.read.return_value = self.corrupted_json
         mock_isfile.return_value = True
+
         result = load_financial_operations("corrupted.json")
-        self.assertEqual(result, [])
+        self.assertEqual(result, [])  # Функция должна возвращать [] при ошибке парсинга
+
         mock_isfile.assert_called_with("corrupted.json")
         mock_file.assert_called_with("corrupted.json", "r", encoding="utf-8")
 
     @patch('builtins.open', new_callable=mock_open)
     @patch('os.path.isfile')
     def test_non_list_root(self, mock_file, mock_isfile):
+        # Настраиваем чтение JSON с не-списком в корне
         mock_file.return_value.__enter__.return_value.read.return_value = self.invalid_json
         mock_isfile.return_value = True
+
         result = load_financial_operations("not_a_list.json")
-        self.assertEqual(result, [])
+        self.assertEqual(result, [])  # Функция должна возвращать [] для не-списка
+
         mock_isfile.assert_called_with("not_a_list.json")
         mock_file.assert_called_with("not_a_list.json", "r", encoding="utf-8")
 
     @patch('os.path.isfile', side_effect=OSError("Device not ready"))
     def test_os_error_on_isfile(self, mock_isfile):
+        # Функция должна обрабатывать OSError и возвращать []
         result = load_financial_operations("os_error.json")
         self.assertEqual(result, [])
+
         mock_isfile.assert_called_with("os_error.json")
 
 
