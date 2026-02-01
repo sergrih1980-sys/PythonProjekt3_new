@@ -1,5 +1,6 @@
-import pytest
+
 from src.decorators import log
+
 
 class TestDecorators:
     def test_success_with_filename(self):
@@ -16,12 +17,10 @@ class TestDecorators:
         def multiply(x, y):
             return x * y
 
-
         result = multiply(2, 6)
         assert result == 12
         captured = capsys.readouterr()
         assert "Function multiply OK" in captured.out
-
 
     def test_no_args_no_kwargs(self, capsys):
         """Функция без аргументов."""
