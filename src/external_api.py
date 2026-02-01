@@ -35,5 +35,3 @@ def currency_conversion(transaction: dict) -> float:
 
 
 
-
-
