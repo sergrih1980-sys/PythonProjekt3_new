@@ -1,29 +1,35 @@
-import json
 import os
-from typing import List, Dict, Any
+import json
 
 
-def load_financial_operations(file_path: str) -> List[Dict[str, Any]]:
+def load_financial_operations(filepath):
     """
-    Загружает данные о финансовых транзакциях из JSON-файла.
+    Загружает финансовые операции из JSON-файла.
 
     Args:
-        file_path (str): Путь к JSON-файлу.
+        filepath (str): путь к JSON-файлу
 
     Returns:
-        List[Dict[str, Any]]: Список транзакций или пустой список при ошибках.
+        list: список словарей с операциями. Если файл:
+            - не найден → []
+            - пуст → []
+            - содержит не-список → []
+            - некорректный JSON → []
     """
-    if not os.path.isfile(file_path):
+    # Проверяем существование файла
+    if not os.path.isfile(filepath):
         return []
 
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            data = json.load(file)
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = json.load(f)
 
+        # Проверяем, что данные — список
         if isinstance(data, list):
             return data
         else:
-            return []
+            return []  # Не список — возвращаем пустой список
 
-    except (json.JSONDecodeError, IOError, OSError):
+    except (OSError, IOError, json.JSONDecodeError):
+        # Ошибки: нет доступа, повреждённый файл, синтаксис JSON
         return []
