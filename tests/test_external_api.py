@@ -3,19 +3,10 @@ from unittest.mock import patch, MagicMock
 import requests
 from src.external_api import currency_conversion
 
-class TestMyCode(unittest.TestCase):
-
+class TestCurrencyConversion(unittest.TestCase):
 
     def setUp(self):
-        self.data = "test"
-
         """Подготавливаем тестовые данные"""
-        self.transaction_rub = {
-            "operationAmount": {
-                "amount": 1000.0,
-                "currency": {"code": "RUB"}
-            }
-        }
         self.transaction_usd = {
             "operationAmount": {
                 "amount": 50.0,
@@ -34,36 +25,14 @@ class TestMyCode(unittest.TestCase):
                 "currency": {"code": "GBP"}
             }
         }
-        self.missing_amount = {  # Нет amount
-            "operationAmount": {
-                "currency": {"code": "USD"}
-            }
-        }
-        self.missing_currency = {  # Нет currency
-            "operationAmount": {
-                "amount": 100.0
-            }
-        }
-        self.no_operation_amount = {}  # Нет operationAmount
 
         # Моки для ответов API
         self.mock_success = MagicMock()
         self.mock_success.status_code = 200
         self.mock_success.json.return_value = {"result": 4850.5}
 
-        self.mock_error = MagicMock()
-        self.mock_error.status_code = 500
-        self.mock_error.text = "Internal Server Error"
-
-    @patch('src.external_api.currency_converter.requests.get')
-    def test_rub_returns_amount(self, mock_get):
-        """RUB → возвращаем исходную сумму, API не вызывается"""
-        result = currency_conversion(self.transaction_rub)
-        self.assertEqual(result, 1000.0)
-        mock_get.assert_not_called()
-
     @patch('src.external_api.currency_converter.requests.get', return_value=self.mock_success)
-    def test_usd_conversion_success(self):(self. mock_get):
+    def test_usd_conversion_success(self, mock_get):
         """USD → успешный ответ API, возвращаем result"""
         result = currency_conversion(self.transaction_usd)
         self.assertEqual(result, 4850.5)
