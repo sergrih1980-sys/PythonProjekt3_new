@@ -2,12 +2,11 @@ import os
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
 API_URL = "https://api.apilayer.com/exchangerates_data/convert?to={to}&from={from}&amount={amount}"
-CURRENCY = ["USD", "EUR"]
 
+load_dotenv()
 
 def currency_conversion(transaction: dict) -> float:
     """ Конвертируем валюту через API и возвращаем его """
