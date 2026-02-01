@@ -70,6 +70,7 @@ def test_missing_amount(mock_get):
     assert result == 0.0
     mock_get.assert_not_called()
 
+
 @patch('requests.get', side_effect=requests.exceptions.RequestException("Network error"))
 def test_request_exception(mock_get):
     """Ошибка сети → 0.0"""
