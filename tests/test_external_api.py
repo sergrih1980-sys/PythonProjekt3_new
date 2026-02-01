@@ -1,4 +1,4 @@
-import pytest
+
 import requests
 from unittest.mock import patch, MagicMock
 from src.external_api import currency_conversion
@@ -24,12 +24,10 @@ TRANSACTION_MISSING_AMOUNT = {
 }
 
 
-
 def test_rub_no_conversion():
     """RUB → без конвертации"""
     result = currency_conversion(TRANSACTION_RUB)
     assert result == 1000.0
-
 
 
 @patch('requests.get')
@@ -51,12 +49,10 @@ def test_usd_conversion_success(mock_get):
     assert "amount=100.0" in args[0]
 
 
-
 def test_unknown_currency():
     """Неизвестная валюта → 0.0"""
     result = currency_conversion(TRANSACTION_UNKNOWN)
     assert result == 0.0
-
 
 
 @patch('requests.get')
@@ -65,7 +61,6 @@ def test_empty_transaction(mock_get):
     result = currency_conversion(TRANSACTION_EMPTY)
     assert result == 0.0
     mock_get.assert_not_called()
-
 
 
 @patch('requests.get')
