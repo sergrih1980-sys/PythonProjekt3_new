@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 
 API_KEY = os.getenv("API_KEY")
-API_URL =  "https://api.apilayer.com/exchangerates_data/convert?to={to}&from_={from_}&amount={amount}"
+API_URL = "https://api.apilayer.com/exchangerates_data/convert?to={to}&from_={from_}&amount={amount}"
 
 load_dotenv()
 

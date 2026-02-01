@@ -2,7 +2,6 @@ import os
 import json
 
 
-
 def load_financial_operations(filepath):
     """
     Загружает финансовые операции из JSON-файла.
