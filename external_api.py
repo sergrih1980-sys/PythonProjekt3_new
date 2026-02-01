@@ -6,6 +6,8 @@ load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
 API_URL = "https://api.exchangeratesapi.com/v1/latest"
+CURRENCY = ["USD", "EUR"]
+
 
 def currency_conversion(transaction: dict) -> float:
     """ Конвертируем валюту через API и возвращаем его """
