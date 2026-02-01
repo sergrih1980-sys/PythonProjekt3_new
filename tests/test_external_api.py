@@ -2,8 +2,6 @@ import pytest
 from unittest.mock import patch, MagicMock
 from src.external_api import currency_conversion
 
-
-
 # Тестовые данные
 TRANSACTION_RUB = {
     "operationAmount": {"amount": 1000.0, "currency": {"code": "RUB"}}
@@ -41,8 +39,14 @@ def test_usd_conversion_success(mock_get):
     mock_get.return_value = mock_response
 
     result = currency_conversion(TRANSACTION_USD)
+
     assert result == 9500.0
-    mock_get.assert_called()
+
+    # Проверяем, что URL содержит from_=USD
+    args, kwargs = mock_get.call_args
+    assert "from_=USD" in args[0]
+    assert "to=RUB" in args[0]
+    assert "amount=100.0" in args[0]
 
 
 
@@ -69,8 +73,7 @@ def test_missing_amount(mock_get):
     assert result == 0.0
     mock_get.assert_not_called()
 
-
-@patch('requests.get', side_effect=Exception("Network error"))
+@patch('requests.get', side_effect=requests.exceptions.RequestException("Network error"))
 def test_request_exception(mock_get):
     """Ошибка сети → 0.0"""
     result = currency_conversion(TRANSACTION_USD)

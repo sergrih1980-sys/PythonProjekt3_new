@@ -16,6 +16,7 @@ def currency_conversion(transaction: dict) -> float:
         return amount
     elif currency in ["USD", "EUR"]:
         try:
+            # Исправлено: from_=currency (не "currency")
             response = requests.get(
                 API_URL.format(to="RUB", from_=currency, amount=amount),
                 headers={"apikey": API_KEY}
@@ -24,7 +25,7 @@ def currency_conversion(transaction: dict) -> float:
                 data = response.json()
                 return data["result"]
             else:
-                print(f"Ошибка при конвертации валюты: {response.status_code} {response.text} ")
+                print(f"Ошибка при конвертации валюты: {response.status_code} {response.text}")
                 return 0.0
         except requests.exceptions.RequestException as e:
             print(f"Ошибка при конвертации валюты: {e}")
