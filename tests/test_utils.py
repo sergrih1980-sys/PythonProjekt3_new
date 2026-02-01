@@ -15,11 +15,9 @@ class TestMyClass(unittest.TestCase):
         self.invalid_json = '{"key": "value"}'  # не список
         self.corrupted_json = '{"missing": "comma"}'  # синтаксическая ошибка
 
-    @patch('builtins.open', new_callable=mock_open)
+    @patch('builtins.open', new_callable=mock_open, read_data=json.dumps(self.valid_data))
     @patch('os.path.isfile')
     def test_load_successful(self, mock_file, mock_isfile):
-        # Настраиваем мок для open
-        mock_file.return_value.__enter__.return_value.read.return_value = json.dumps(self.valid_data)
         mock_isfile.return_value = True
 
         result = load_financial_operations("test.json")
@@ -47,29 +45,25 @@ class TestMyClass(unittest.TestCase):
         mock_isfile.assert_called_with("broken.json")
         mock_file.assert_called_with("broken.json", "r", encoding="utf-8")
 
-
-    @patch('builtins.open', new_callable=mock_open)
+    @patch('builtins.open', new_callable=mock_open, read_data=self.corrupted_json)
     @patch('os.path.isfile')
     def test_json_decode_error(self, mock_file, mock_isfile):
         mock_isfile.return_value = True
-        mock_file.return_value.__enter__.return_value.read.return_value = self.corrupted_json
-
 
         result = load_financial_operations("corrupted.json")
         self.assertEqual(result, [])
+
         mock_isfile.assert_called_with("corrupted.json")
         mock_file.assert_called_with("corrupted.json", "r", encoding="utf-8")
 
-
-    @patch('builtins.open', new_callable=mock_open)
+    @patch('builtins.open', new_callable=mock_open, read_data=self.invalid_json)
     @patch('os.path.isfile')
     def test_non_list_root(self, mock_file, mock_isfile):
         mock_isfile.return_value = True
-        mock_file.return_value.__enter__.return_value.read.return_value = self.invalid_json
-
 
         result = load_financial_operations("not_a_list.json")
         self.assertEqual(result, [])
+
         mock_isfile.assert_called_with("not_a_list.json")
         mock_file.assert_called_with("not_a_list.json", "r", encoding="utf-8")
 
