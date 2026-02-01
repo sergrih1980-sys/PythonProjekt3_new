@@ -1,6 +1,8 @@
 import pytest
+import requests
 from unittest.mock import patch, MagicMock
 from src.external_api import currency_conversion
+
 
 # Тестовые данные
 TRANSACTION_RUB = {
