@@ -3,8 +3,6 @@ from unittest.mock import patch, mock_open
 import json
 from src.utils import load_financial_operations
 
-
-
 class TestLoadFinancialOperations(unittest.TestCase):
 
     def setUp(self):
@@ -37,7 +35,6 @@ class TestLoadFinancialOperations(unittest.TestCase):
 
         result = load_financial_operations("nonexistent.json")
 
-
         self.assertEqual(result, [])
         mock_isfile.assert_called_with("nonexistent.json")
 
@@ -48,9 +45,7 @@ class TestLoadFinancialOperations(unittest.TestCase):
         mock_isfile.return_value = True
         mock_file.side_effect = IOError("Permission denied")
 
-
         result = load_financial_operations("broken.json")
-
 
         self.assertEqual(result, [])
         mock_isfile.assert_called_with("broken.json")
@@ -64,7 +59,6 @@ class TestLoadFinancialOperations(unittest.TestCase):
         mock_file.return_value.__enter__.return_value.read.return_value = self.corrupted_json
 
         result = load_financial_operations("corrupted.json")
-
 
         self.assertEqual(result, [])
         mock_isfile.assert_called_with("corrupted.json")
