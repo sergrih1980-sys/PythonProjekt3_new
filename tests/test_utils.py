@@ -5,7 +5,7 @@ import json
 from src.utils import load_financial_operations
 
 
-class TestLoadFinancialOperations(unittest.TestCase):
+class TestMyClass(unittest.TestCase):
 
     def setUp(self):
         """Подготавливаем тестовые данные"""
@@ -70,7 +70,6 @@ class TestLoadFinancialOperations(unittest.TestCase):
         result = load_financial_operations("os_error.json")
         self.assertEqual(result, [])
         mock_isfile.assert_called_with("os_error.json")
-
 
 
 if __name__ == '__main__':
