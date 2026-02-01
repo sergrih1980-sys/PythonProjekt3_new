@@ -31,9 +31,11 @@ class TestCurrencyConversion(unittest.TestCase):
         self.mock_success.status_code = 200
         self.mock_success.json.return_value = {"result": 4850.5}
 
-    @patch('src.external_api.currency_converter.requests.get', return_value=self.mock_success)
+    @patch('src.external_api.currency_converter.requests.get')
     def test_usd_conversion_success(self, mock_get):
-        """USD → успешный ответ API, возвращаем result"""
+        # Настраиваем мок внутри теста
+        mock_get.return_value = self.mock_success
+
         result = currency_conversion(self.transaction_usd)
         self.assertEqual(result, 4850.5)
         mock_get.assert_called_once()
@@ -41,9 +43,12 @@ class TestCurrencyConversion(unittest.TestCase):
         expected_url = "https://api.apilayer.com/exchangerates_data/convert?to=RUB&from=USD&amount=50.0"
         mock_get.assert_called_with(expected_url, headers={"apikey": "mocked_api_key"})
 
-    @patch('src.external_api.currency_converter.requests.get', return_value=self.mock_success)
+    @patch('src.external_api.currency_converter.requests.get')
     def test_eur_conversion_success(self, mock_get):
         """EUR → успешный ответ API, возвращаем result"""
+        # Настраиваем мок внутри теста
+        mock_get.return_value = self.mock_success
+
         result = currency_conversion(self.transaction_eur)
         self.assertEqual(result, self.mock_success.json.return_value["result"])
         mock_get.assert_called_once()
