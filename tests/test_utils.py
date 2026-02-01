@@ -17,9 +17,12 @@ class TestMyClass(unittest.TestCase):
         self.corrupted_json = '{"missing": "comma"}'  # синтаксическая ошибка
 
     @patch('os.path.isfile')
-    @patch('builtins.open', mock_open(read_data=json.dumps(self.valid_data)))
+    @patch('builtins.open', mock_open())
     def test_load_successful(self, mock_isfile, mock_file):
         mock_isfile.return_value = True
+        mock_file.return_value.read.return_value = json.dumps(self.valid_data)
+
+
         result = load_financial_operations("test.json")
         self.assertEqual(result, self.valid_data)
         mock_isfile.assert_called_with("test.json")
@@ -32,7 +35,6 @@ class TestMyClass(unittest.TestCase):
         self.assertEqual(result, [])
         mock_isfile.assert_called_with("nonexistent.json")
 
-
     @patch('os.path.isfile')
     @patch('builtins.open', side_effect=IOError("Permission denied"))
     def test_io_error_on_open(self, mock_isfile, mock_open):
@@ -42,18 +44,23 @@ class TestMyClass(unittest.TestCase):
         mock_isfile.assert_called_with("broken.json")
 
     @patch('os.path.isfile')
-    @patch('builtins.open', mock_open(read_data=self.corrupted_json))
+    @patch('builtins.open', mock_open())
     def test_json_decode_error(self, mock_isfile, mock_file):
         mock_isfile.return_value = True
+        mock_file.return_value.read.return_value = self.corrupted_json
+
         result = load_financial_operations("corrupted.json")
         self.assertEqual(result, [])
         mock_isfile.assert_called_with("corrupted.json")
         mock_file.assert_called_with("corrupted.json", "r", encoding="utf-8")
 
     @patch('os.path.isfile')
-    @patch('builtins.open', mock_open(read_data=self.invalid_json))
+    @patch('builtins.open', mock_open())
     def test_non_list_root(self, mock_isfile, mock_file):
         mock_isfile.return_value = True
+        mock_file.return_value.read.return_value = self.invalid_json
+
+
         result = load_financial_operations("not_a_list.json")
         self.assertEqual(result, [])
         mock_isfile.assert_called_with("not_a_list.json")
