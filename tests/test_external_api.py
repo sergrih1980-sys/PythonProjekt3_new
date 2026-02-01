@@ -3,6 +3,7 @@ from unittest.mock import patch, MagicMock
 import requests
 from src.external_api import currency_conversion
 
+
 class TestCurrencyConversion(unittest.TestCase):
 
     def setUp(self):
@@ -67,6 +68,7 @@ class TestCurrencyConversion(unittest.TestCase):
         result = currency_conversion(self.transaction_usd)
         self.assertEqual(result, 0.0)
         mock_get.assert_called_once()
+
 
 if __name__ == '__main__':
     unittest.main()
