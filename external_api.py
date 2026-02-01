@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
-API_URL = "https://api.exchangeratesapi.com/v1/latest"
+API_URL = "https://api.apilayer.com/exchangerates_data/convert?to={to}&from={from}&amount={amount}"
 CURRENCY = ["USD", "EUR"]
 
 
@@ -19,13 +19,13 @@ def currency_conversion(transaction: dict) -> float:
     elif currency in ["USD", "EUR"]:
         try:
             response = requests.get(
-                API_URL.format(to="RUB", from_="currency", amount=amount), headers={"apiky": API_KEY}
+                API_URL.format(to="RUB", from_="currency", amount=amount), headers={"apikey": API_KEY}
             )
-            if response.status_code ==200:
+            if response.status_code == 200:
                 data = response.json()
                 return data["result"]
             else:
-                print(f"Ошибка при конвертации валюты: {response.status_code}")
+                print(f"Ошибка при конвертации валюты: {response.status_code} {response.text} ")
                 return 0.0
         except requests.exceptions.RequestException as e:
             print(f"Ошибка при конвертации валюты: {e}")
