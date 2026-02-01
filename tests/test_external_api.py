@@ -3,6 +3,7 @@ from unittest.mock import patch, MagicMock
 import requests
 from src.external_api import currency_conversion
 
+
 class TestCurrencyConversion(unittest.TestCase):
 
     def setUp(self):
@@ -42,7 +43,6 @@ class TestCurrencyConversion(unittest.TestCase):
         expected_url = "https://api.apilayer.com/exchangerates_data/convert?to=RUB&from=USD&amount=50.0"
         mock_get.assert_called_with(expected_url, headers={"apikey": "mocked_api_key"})
 
-
     @patch('src.external_api.currency_conversion.requests.get')
     def test_eur_conversion_success(self, mock_get):
         mock_get.return_value = self.mock_success
@@ -63,6 +63,7 @@ class TestCurrencyConversion(unittest.TestCase):
         result = currency_conversion(self.transaction_usd)
         self.assertEqual(result, 0.0)
         mock_get.assert_called_once()
+
 
 if __name__ == '__main__':
     unittest.main()
