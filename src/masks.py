@@ -18,6 +18,7 @@ file_handler.setFormatter(file_formatter)
 if not logger.handlers:
     logger.addHandler(file_handler)
 
+
 def get_mask_card_number(card_number: str) -> str:
     """Маскирует номер банковской карты, возвращает строку
     в формате: XXXX XX** **** XXXX"""
@@ -50,7 +51,6 @@ def get_mask_card_number(card_number: str) -> str:
     return result
 
 
-
 def get_mask_account(account_number: str) -> str:
     """
     Маскирует номер банковского счета.
@@ -78,7 +78,6 @@ def get_mask_account(account_number: str) -> str:
     result = f'**{digits[-4:]}'
     logger.info(f"Маска счёта сформирована: '{result}'")
     return result
-
 
 
 if __name__ == "__main__":
