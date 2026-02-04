@@ -14,7 +14,7 @@ file_formatter = logging.Formatter(
 file_handler = logging.FileHandler('logs.log', mode='w', encoding='utf-8')
 file_handler.setFormatter(file_formatter)
 
-# Добавляем handler в логгер (если ещё не добавлен)
+# Добавляем handler в логгер
 if not logger.handlers:
     logger.addHandler(file_handler)
 
