@@ -64,7 +64,6 @@ def load_financial_operations(filepath: str) -> List[Dict[str, Any]]:
         return []
 
 
-
 if __name__ == "__main__":
     # Тестовые вызовы
     operations = load_financial_operations("operations.json")
