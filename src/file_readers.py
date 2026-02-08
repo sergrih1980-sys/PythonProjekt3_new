@@ -48,10 +48,3 @@ def read_transactions_excel(file_path):
     return transactions
 
 
-# Тест для CSV
-csv_transactions = read_transactions_csv('transactions.csv')
-print("CSV:", csv_transactions)
-
-# Тест для Excel
-excel_transactions = read_transactions_excel('transactions.xlsx')
-print("Excel:", excel_transactions)
