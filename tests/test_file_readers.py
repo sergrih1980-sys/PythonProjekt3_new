@@ -1,8 +1,8 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 import pandas as pd
-import os
 from src.file_readers import read_transactions_excel
+from src.file_readers import read_transactions_csv
 
 
 class TestReadTransactionsExcel(unittest.TestCase):
@@ -48,22 +48,20 @@ class TestReadTransactionsExcel(unittest.TestCase):
         result = read_transactions_excel('empty.xlsx')
         self.assertEqual(result, [])
 
-    import unittest
 
+class TestReadTransactionsCSV(unittest.TestCase):
 
- class TestReadTransactionsCSV(unittest.TestCase):
+     @patch('builtins.open', new_callable=mock_open, read_data='дата,сумма\n2024-01-01,1000\n2024-01-02,-500')
+     @patch('os.path.exists', return_value=True)
+     def test_read_csv_success(self, mock_file, mock_exists):
+        """Тест успешного чтения CSV-файла."""
+        result = read_transactions_csv('dummy.csv')
 
-        @patch('builtins.open', new_callable=mock_open, read_data='дата,сумма\n2024-01-01,1000\n2024-01-02,-500')
-        @patch('os.path.exists', return_value=True)
-        def test_read_csv_success(self, mock_file, mock_exists):
-            """Тест успешного чтения CSV-файла."""
-            result = read_transactions_csv('dummy.csv')
-
-            expected = [
-                {'дата': '2024-01-01', 'сумма': '1000'},
-                {'дата': '2024-01-02', 'сумма': '-500'}
+        expected = [
+             {'дата': '2024-01-01', 'сумма': '1000'},
+             {'дата': '2024-01-02', 'сумма': '-500'}
             ]
-            self.assertEqual(result, expected)
+        self.assertEqual(result, expected)
 
         @patch('os.path.exists', return_value=False)
         def test_file_not_found(self, mock_exists):
