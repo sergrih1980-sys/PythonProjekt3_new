@@ -6,25 +6,24 @@ from src.file_readers import read_transactions_csv, read_transactions_excel
 
 class TestReadTransactionsExcel(unittest.TestCase):
 
-   @patch('src.file_readers.pd.read_excel')  # ← Точный путь к pd.read_excel
-   @patch('src.file_readers.os.path.exists', return_value=True)
-   def test_read_excel_success(self, mock_read_excel, mock_exists):
-       """Тест успешного чтения Excel-файла."""
-       mock_df = pd.DataFrame([
+    @patch('src.file_readers.os.path.exists', return_value=True)
+    @patch('src.file_readers.pd.read_excel')
+    def test_read_excel_success(self, mock_exists, mock_read_excel):
+        """Тест успешного чтения Excel-файла."""
+        mock_df = pd.DataFrame([
             {'дата': '2024-01-01', 'сумма': 1000},
             {'дата': '2024-01-02', 'сумма': -500}
         ])
-       mock_read_excel.return_value = mock_df
+        mock_read_excel.return_value = mock_df
 
+        result = read_transactions_excel('dummy.xlsx')
 
-       result = read_transactions_excel('dummy.xlsx')
-
-
-       expected = [
+        expected = [
             {'дата': '2024-01-01', 'сумма': 1000},
             {'дата': '2024-01-02', 'сумма': -500}
         ]
-       self.assertEqual(result, expected)    @patch('os.path.exists', return_value=False)
+        self.assertEqual(result, expected)
+
 
    def test_file_not_found_excel(self, mock_exists):
         """Тест: Excel-файл не найден."""
