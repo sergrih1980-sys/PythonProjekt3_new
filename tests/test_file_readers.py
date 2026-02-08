@@ -51,9 +51,9 @@ class TestReadTransactionsExcel(unittest.TestCase):
 
 class TestReadTransactionsCSV(unittest.TestCase):
 
-     @patch('builtins.open', new_callable=mock_open, read_data='дата,сумма\n2024-01-01,1000\n2024-01-02,-500')
-     @patch('os.path.exists', return_value=True)
-     def test_read_csv_success(self, mock_file, mock_exists):
+    @patch('builtins.open', new_callable=mock_open, read_data='дата,сумма\n2024-01-01,1000\n2024-01-02,-500')
+    @patch('os.path.exists', return_value=True)
+    def test_read_csv_success(self, mock_file, mock_exists):
         """Тест успешного чтения CSV-файла."""
         result = read_transactions_csv('dummy.csv')
 
