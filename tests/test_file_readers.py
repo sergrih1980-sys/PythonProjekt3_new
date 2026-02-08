@@ -24,16 +24,15 @@ class TestReadTransactionsExcel(unittest.TestCase):
         ]
         self.assertEqual(result, expected)
 
-
-   def test_file_not_found_excel(self, mock_exists):
+    def test_file_not_found_excel(self, mock_exists):
         """Тест: Excel-файл не найден."""
         with self.assertRaises(FileNotFoundError) as context:
             read_transactions_excel('nonexistent.xlsx')
         self.assertIn('Файл не найден', str(context.exception))
 
-   @patch('pandas.read_excel', side_effect=ValueError('Неверный формат Excel'))
-   @patch('os.path.exists', return_value=True)
-   def test_invalid_excel_format(self, mock_read_excel, mock_exists):
+    @patch('pandas.read_excel', side_effect=ValueError('Неверный формат Excel'))
+    @patch('os.path.exists', return_value=True)
+    def test_invalid_excel_format(self, mock_read_excel, mock_exists):
         """Тест: неверный формат Excel-файла."""
         with self.assertRaises(ValueError) as context:
             read_transactions_excel('invalid.xlsx')
