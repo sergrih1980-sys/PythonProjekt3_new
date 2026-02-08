@@ -1,9 +1,7 @@
 import unittest
 from unittest.mock import mock_open, patch
 import pandas as pd
-import os
 from src.file_readers import read_transactions_csv, read_transactions_excel
-
 
 
 class TestReadTransactionsExcel(unittest.TestCase):
@@ -49,7 +47,6 @@ class TestReadTransactionsExcel(unittest.TestCase):
         self.assertEqual(result, [])
 
 
-
 class TestReadTransactionsCSV(unittest.TestCase):
 
     @patch('builtins.open', new_callable=mock_open, read_data='дата,сумма\n2024-01-01,1000\n2024-01-02,-500')
@@ -78,7 +75,6 @@ class TestReadTransactionsCSV(unittest.TestCase):
         with self.assertRaises(OSError) as context:
             read_transactions_csv('broken.csv')
         self.assertEqual(str(context.exception), 'Ошибка чтения файла')
-
 
     @patch('builtins.open', new_callable=mock_open, read_data='')
     @patch('os.path.exists', return_value=True)
