@@ -2,6 +2,7 @@ import csv
 import os
 import pandas as pd
 
+
 def read_transactions_csv(file_path):
     """
     Считывает финансовые операции из CSV‑файла.
@@ -53,4 +54,3 @@ print("CSV:", csv_transactions)
 # Тест для Excel
 excel_transactions = read_transactions_excel('transactions.xlsx')
 print("Excel:", excel_transactions)
-
