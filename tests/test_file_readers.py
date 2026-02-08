@@ -33,7 +33,6 @@ class TestReadTransactionsExcel(unittest.TestCase):
             read_transactions_excel('nonexistent.xlsx')
         self.assertIn('Файл не найден', str(context.exception))
 
-
     @patch('pandas.read_excel', side_effect=ValueError('Неверный формат Excel'))
     @patch('os.path.exists', return_value=True)
     def test_invalid_excel_format(self, mock_read_excel, mock_exists):
@@ -41,7 +40,6 @@ class TestReadTransactionsExcel(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             read_transactions_excel('invalid.xlsx')
         self.assertEqual(str(context.exception), 'Неверный формат Excel')
-
 
     @patch('pandas.read_excel', return_value=pd.DataFrame())
     @patch('os.path.exists', return_value=True)
@@ -60,7 +58,6 @@ class TestReadTransactionsCSV(unittest.TestCase):
         """Тест успешного чтения CSV-файла."""
         result = read_transactions_csv('dummy.csv')
 
-
         expected = [
             {'дата': '2024-01-01', 'сумма': '1000'},
             {'дата': '2024-01-02', 'сумма': '-500'}
@@ -74,7 +71,6 @@ class TestReadTransactionsCSV(unittest.TestCase):
             read_transactions_csv('nonexistent.csv')
         self.assertIn('Файл не найден', str(context.exception))
 
-
     @patch('builtins.open', side_effect=OSError('Ошибка чтения файла'))
     @patch('os.path.exists', return_value=True)
     def test_io_error_on_read(self, mock_file, mock_exists):
@@ -86,3 +82,7 @@ class TestReadTransactionsCSV(unittest.TestCase):
 
     @patch('builtins.open', new_callable=mock_open, read_data='')
     @patch('os.path.exists', return_value=True)
+    def test_empty_csv(self, mock_file, mock_exists):
+        """Тест: пустой CSV-файл."""
+        result = read_transactions_csv('empty.csv')
+        self.assertEqual(result, [])
