@@ -5,9 +5,9 @@ from src.file_readers import read_transactions_excel, read_transactions_csv
 
 class TestReadTransactionsExcel(unittest.TestCase):
 
-    @patch('src.file_readers.pd.read_excel')  # ← первый
-    @patch('src.file_readers.os.path.exists', return_value=True)  # ← второй
-    def test_read_excel_success(self, mock_read_excel, mock_exists):  # ← порядок!
+    @patch('src.file_readers.os.path.exists', return_value=True)
+    @patch('src.file_readers.pd.read_excel')  # ← теперь второй
+    def test_read_excel_success(self, mock_exists, mock_read_excel):
         """Тест успешного чтения Excel-файла."""
         mock_df = pd.DataFrame([
             {'дата': '2024-01-01', 'сумма': 1000},
