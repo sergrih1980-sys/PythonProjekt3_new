@@ -3,8 +3,8 @@ from unittest.mock import mock_open, patch
 import pandas as pd
 from src.file_readers import read_transactions_excel, read_transactions_csv
 
-class TestReadTransactionsExcel(unittest.TestCase):
 
+class TestReadTransactionsExcel(unittest.TestCase):
 
     @patch('src.file_readers.os.path.exists', return_value=False)
     def test_file_not_found_excel(self, mock_exists):
@@ -19,7 +19,7 @@ class TestReadTransactionsExcel(unittest.TestCase):
         """Тест: неверный формат Excel-файла."""
         with self.assertRaises(ValueError) as context:
          read_transactions_excel('invalid.xlsx')
-         self.assertEqual(str(context.exception), 'Неверный формат Excel')
+        self.assertEqual(str(context.exception), 'Неверный формат Excel')
 
     @patch('pandas.read_excel', return_value=pd.DataFrame())
     @patch('os.path.exists', return_value=True)
