@@ -481,4 +481,58 @@ print(result)  # Например: 9500.0 (если курс USD→RUB = 95)
 `operations = load_financial_operations("data/operations.json")`
 `print(operations)`  # Например: `[{'id': 1, 'amount': 1000}, ...]` или []
 
+## Функции
+`read_transactions_csv(file_path)`
+**Назначение**
+- Считывает транзакции из CSV‑файла и возвращает список словарей.
+
+**Параметры**
+
+`file_path (str)` — путь к CSV‑файлу.
+
+**Возвращает**
+
+`list[dict]` — список словарей, где каждый словарь соответствует одной транзакции.
+
+**Исключения**
+
+`FileNotFoundError` — если файл не найден.
+
+## Пример использования:
+
+`python`
+`transactions = read_transactions_csv("data.csv")
+print(transactions)`
+# [{'дата': '2024-01-01', 'сумма': '1000', 'описание': 'Зарплата'}, ...]
+**Особенности**
+
+Использует кодировку `utf-8.`
+
+Преобразует `OrderedDict (из csv.DictReader)` в обычный dict.
+
+`read_transactions_excel(file_path)`
+**Назначение**
+Считывает транзакции из `Excel‑файла (.xlsx)` и возвращает список словарей.
+
+**Параметры**
+
+`file_path (str)` — путь к Excel‑файлу.
+
+**Возвращает**
+
+`list[dict]` — список словарей, где каждый словарь соответствует одной транзакции.
+
+**Исключения**
+
+`FileNotFoundError` — если файл не найден.
+
+Может пробросить исключения от `pandas.read_excel` (например, при некорректном формате файла).
+
+## Пример использования
+
+`python`
+`transactions = read_transactions_excel("data.xlsx")
+print(transactions)`
+# [{'дата': '2024-01-01', 'сумма': 1000, 'описание': 'Зарплата'}, ...]
+
 
