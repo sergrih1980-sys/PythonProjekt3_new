@@ -1,22 +1,22 @@
 import unittest
 from unittest.mock import mock_open, patch
 import pandas as pd
-from src.file_readers import read_transactions_csv, read_transactions_excel
-
+from src.file_readers import read_transactions_excel, read_transactions_csv
 
 class TestReadTransactionsExcel(unittest.TestCase):
 
-    @patch('src.file_readers.os.path.exists', return_value=True)
-    @patch('src.file_readers.pd.read_excel')
-    def test_read_excel_success(self, mock_exists, mock_read_excel):
+    @patch('src.file_readers.pd.read_excel')  # ← первый
+    @patch('src.file_readers.os.path.exists', return_value=True)  # ← второй
+    def test_read_excel_success(self, mock_read_excel, mock_exists):  # ← порядок!
         """Тест успешного чтения Excel-файла."""
         mock_df = pd.DataFrame([
             {'дата': '2024-01-01', 'сумма': 1000},
             {'дата': '2024-01-02', 'сумма': -500}
         ])
-        mock_read_excel.return_value = mock_df
+        mock_read_excel.return_value = mock_df  # ← мок возвращает DataFrame
 
-        result = read_transactions_excel('dummy.xlsx')
+
+        result = read_transactions_excel('dummy.xlsx')  # ← file_path = строка!
 
         expected = [
             {'дата': '2024-01-01', 'сумма': 1000},
