@@ -46,5 +46,3 @@ def read_transactions_excel(file_path):
     # Преобразуем DataFrame в список словарей
     transactions = df.to_dict(orient='records')
     return transactions
-
-
