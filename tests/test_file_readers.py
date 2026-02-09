@@ -55,6 +55,24 @@ class TestReadTransactionsExcel(unittest.TestCase):
         result = read_transactions_excel('empty.xlsx')
         self.assertEqual(result, [])
 
+    @patch('os.path.exists')
+    @patch('pandas.read_excel')
+    def test_excel_with_one_row(self, mock_read_excel, mock_exists):
+        """Тест: Excel с одной строкой данных."""
+        mock_exists.return_value = True
+
+        mock_df = pd.DataFrame([{'дата': '2024-01-03', 'сумма': 200}])
+        mock_read_excel.return_value = mock_df
+
+
+        result = read_transactions_excel('one_row.xlsx')
+
+
+        expected = [{'дата': '2024-01-03', 'сумма': 200}]
+        self.assertEqual(result, expected)
+
+        mock_read_excel.assert_called_once_with('one_row.xlsx', engine='openpyxl')
+
 
 class TestReadTransactionsCSV(unittest.TestCase):
 
