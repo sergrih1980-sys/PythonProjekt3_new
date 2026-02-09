@@ -109,3 +109,32 @@ class TestReadTransactionsCSV(unittest.TestCase):
         """Тест: пустой CSV-файл."""
         result = read_transactions_csv('empty.csv')
         self.assertEqual(result, [])
+
+    @patch('os.path.exists')
+    @patch('builtins.open', new_callable=mock_open, read_data='столбец1,столбец2\n,значение2\nзначение1,')
+    def test_csv_with_empty_values(self, mock_file, mock_exists):
+        """Тест: CSV с пустыми значениями (None/пустая строка)."""
+        mock_exists.return_value = True
+
+        result = read_transactions_csv('empty_values.csv')
+
+        expected = [
+            {'столбец1': '', 'столбец2': 'значение2'},
+            {'столбец1': 'значение1', 'столбец2': ''}
+        ]
+        self.assertEqual(result, expected)
+
+    @patch('os.path.exists')
+    @patch('builtins.open', new_callable=mock_open, read_data='имя,возраст\n"Иванов, Иван",30\n"Петров, Пётр",25')
+    def test_csv_with_quoted_fields(self, mock_file, mock_exists):
+        """Тест: CSV с полями, содержащими запятые (в кавычках)."""
+        mock_exists.return_value = True
+
+        result = read_transactions_csv('quoted.csv')
+
+        expected = [
+            {'имя': 'Иванов, Иван', 'возраст': '30'},
+            {'имя': 'Петров, Пётр', 'возраст': '25'}
+        ]
+        self.assertEqual(result, expected)
+
