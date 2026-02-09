@@ -18,7 +18,7 @@ class TestReadTransactionsExcel(unittest.TestCase):
     def test_invalid_excel_format(self, mock_read_excel, mock_exists):
         """Тест: неверный формат Excel-файла."""
         with self.assertRaises(ValueError) as context:
-         read_transactions_excel('invalid.xlsx')
+        read_transactions_excel('invalid.xlsx')
         self.assertEqual(str(context.exception), 'Неверный формат Excel')
 
     @patch('pandas.read_excel', return_value=pd.DataFrame())
