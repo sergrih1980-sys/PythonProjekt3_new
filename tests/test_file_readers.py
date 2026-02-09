@@ -1,10 +1,37 @@
 import unittest
 from unittest.mock import mock_open, patch
+
 import pandas as pd
-from src.file_readers import read_transactions_excel, read_transactions_csv
+
+from src.file_readers import read_transactions_csv, read_transactions_excel
 
 
 class TestReadTransactionsExcel(unittest.TestCase):
+
+    @patch('os.path.exists')
+    @patch('pandas.read_excel')
+    def test_read_excel_success(self, mock_read_excel, mock_exists):
+        """Тест успешного чтения Excel-файла."""
+        # Настраиваем моки
+        mock_exists.return_value = True
+
+        mock_df = pd.DataFrame([
+            {'дата': '2024-01-01', 'сумма': 1000, 'описание': 'Зарплата'},
+            {'дата': '2024-01-02', 'сумма': -500, 'описание': 'Продукты'}
+        ])
+        mock_read_excel.return_value = mock_df
+
+        # Вызываем тестируемую функцию
+        result = read_transactions_excel('dummy.xlsx')
+
+        # Ожидаемый результат — список словарей
+        expected = [
+            {'дата': '2024-01-01', 'сумма': 1000, 'описание': 'Зарплата'},
+            {'дата': '2024-01-02', 'сумма': -500, 'описание': 'Продукты'}
+        ]
+
+        self.assertEqual(result, expected)
+        mock_read_excel.assert_called_once_with('dummy.xlsx', engine='openpyxl')
 
     @patch('src.file_readers.os.path.exists', return_value=False)
     def test_file_not_found_excel(self, mock_exists):
