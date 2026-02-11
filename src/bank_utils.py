@@ -3,11 +3,11 @@ import json
 import re
 from datetime import datetime
 from typing import Any, Dict, List
-
 import pandas as pd
 
 
 """ Загрузка данных из разных форматов """
+
 def load_from_json(filepath: str) -> List[Dict[str, Any]]:
     with open(filepath, 'r', encoding='utf-8') as f:
         return json.load(f)
