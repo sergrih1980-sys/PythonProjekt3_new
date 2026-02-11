@@ -63,7 +63,7 @@ def format_date(date_str: str) -> str:
     try:
         dt = datetime.strptime(date_str, '%Y-%m-%d')
         return dt.strftime('%d.%m.%Y')
-    except  ValueError:
+    except ValueError:
         return date_str
 
 
