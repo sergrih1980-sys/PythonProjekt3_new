@@ -3,7 +3,7 @@ import json
 import os
 import unittest
 from unittest.mock import patch
-
+from src.bank_utils import process_bank_operations
 import pandas as pd
 
 # Импортируем тестируемые функции
@@ -110,3 +110,60 @@ class TestBankOperations(unittest.TestCase):
     def test_print_operations_empty(self, mock_print):
         print_operations([])
         mock_print.assert_called_with("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
+
+
+class TestProcessBankOperations(unittest.TestCase):
+
+    def test_basic_matching(self):
+        """Тест: обычные совпадения категорий в описаниях."""
+        data = [
+            {'description': 'Покупка продуктов в магазине "Перекрёсток"'},
+            {'description': 'Оплата интернета от провайдера Ростелеком'},
+            {'description': 'Супермаркет "Азбука вкуса" — продукты'},
+            {'description': 'Мобильная связь: пополнение счёта МТС'},
+        ]
+        categories = ['продукты', 'связь', 'интернет']
+
+        result = process_bank_operations(data, categories)
+
+        # Проверяем подсчёты
+        self.assertEqual(result['продукты'], 2)
+        self.assertEqual(result['связь'], 1)
+        self.assertEqual(result['интернет'], 1)
+
+    def test_no_matches(self):
+        """Тест: ни одна категория не найдена в описаниях."""
+        data = [
+            {'description': 'Перевод на счёт в другом банке'},
+            {'description': 'Комиссия за обслуживание карты'},
+            {'description': 'Возврат товара в магазин одежды'},
+        ]
+        categories = ['продукты', 'транспорт', 'кафе']
+
+        result = process_bank_operations(data, categories)
+
+        # Все категории должны быть с нулём
+        for category in categories:
+            self.assertEqual(result[category], 0)
+
+    def test_empty_inputs(self):
+        """Тест: пустые входные данные."""
+        # 1. Пустой список операций
+        data_empty = []
+        categories = ['продукты', 'связь']
+        result1 = process_bank_operations(data_empty, categories)
+        self.assertEqual(result1, {'продукты': 0, 'связь': 0})
+
+        # 2. Пустой список категорий
+        data = [{'description': 'Покупка продуктов'}]
+        categories_empty = []
+        result2 = process_bank_operations(data, categories_empty)
+        self.assertEqual(result2, {})  # Ожидаем пустой словарь
+
+        # 3. И операции, и категории пустые
+        result3 = process_bank_operations([], [])
+        self.assertEqual(result3, {})
+
+
+if __name__ == '__main__':
+    unittest.main()
