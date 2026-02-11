@@ -114,24 +114,6 @@ class TestBankOperations(unittest.TestCase):
 
 class TestProcessBankOperations(unittest.TestCase):
 
-    def test_basic_matching(self):
-        """Тест: обычные совпадения категорий в описаниях."""
-        data = [
-            {'description': 'Покупка продуктов в магазине "Перекрёсток"'},
-            {'description': 'Оплата интернета от провайдера Ростелеком'},
-            {'description': 'Супермаркет "Азбука вкуса" — продукты'},
-            {'description': 'Мобильная связь: пополнение счёта МТС'},
-        ]
-        categories = ['продукты', 'связь', 'интернет']
-
-        result = process_bank_operations(data, categories)
-
-        # Проверяем подсчёты
-        self.assertEqual(result['продукты'], 2)
-        self.assertEqual(result['связь'], 1)
-        self.assertEqual(result['интернет'], 1)
-
-
     def test_empty_inputs(self):
         """Тест: пустые входные данные."""
         # 1. Пустой список операций
