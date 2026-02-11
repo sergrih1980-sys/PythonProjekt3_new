@@ -90,20 +90,30 @@ def print_operations(ops: List[Dict[str, Any]]):
 
 
 def process_bank_operations(data: list[dict], categories: list) -> dict:
-    """Группирует банковские операции по категориям и подсчитывает количество операций в каждой категории."""
+    """
+    Группирует банковские операции по категориям и подсчитывает количество операций в каждой категории.
+
+    Args:
+        data: список словарей с полем 'description'
+        categories: список названий категорий для поиска
+
+    Returns:
+        Словарь с количеством операций по каждой категории
+    """
     result = {category: 0 for category in categories}
 
     for operation in data:
-        # Получаем описание, приводим к нижнему регистру
+        # 1. Получаем описание, приводим к нижнему регистру
         description = operation.get('description', '').lower()
 
-        # Нормализуем разделители: заменяем длинное тире, дефис и другие на пробел
-        for sep in ['—', '-', '–', '―']:
-            description = description.replace(sep, ' ')
+        # 2. Нормализуем разделители: заменяем тире, дефисы на пробелы
+        for separator in ['—', '-', '–', '―', '−']:
+            description = description.replace(separator, ' ')
 
-        # Убираем лишние пробелы
+        # 3. Убираем лишние пробелы (множественные пробелы → один пробел)
         description = ' '.join(description.split())
 
+        # 4. Проверяем каждую категорию
         for category in categories:
             category_lower = category.lower()
             if category_lower in description:
