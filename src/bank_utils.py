@@ -1,9 +1,10 @@
-import json
 import csv
-import pandas as pd
-from typing import List, Dict, Any
+import json
 import re
 from datetime import datetime
+from typing import Any, Dict, List
+
+import pandas as pd
 
 
 """ Загрузка данных из разных форматов """
@@ -19,6 +20,7 @@ def load_from_xlsx(filepath: str) -> List[Dict[str, Any]]:
     df = pd.read_excel(filepath)
     return df.to_dict('records')
 
+
 #  Фильтрация и сортировка
 def filter_by_status(data: List[Dict[str, Any]], status: str) -> List[Dict[str, Any]]:
     target = status.strip().upper()
@@ -27,6 +29,7 @@ def filter_by_status(data: List[Dict[str, Any]], status: str) -> List[Dict[str, 
         return []
     return [op for op in data if op.get('status', '').upper() == target]
 
+
 def sort_by_date(data: List[Dict[str, Any]], ascending: bool = True) -> List[Dict[str, Any]]:
     return sorted(
         data,
@@ -34,11 +37,13 @@ def sort_by_date(data: List[Dict[str, Any]], ascending: bool = True) -> List[Dic
         reverse=not ascending
     )
 
+
 def filter_ruble_only(data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return [
         op for op in data
         if str(op.get('currency', '')).upper() in {'RUB', 'РУБ'}
     ]
+
 
 # Поиск по описанию
 def process_bank_search(data: List[Dict[str, Any]], search: str) -> List[Dict[str, Any]]:
@@ -50,12 +55,14 @@ def process_bank_search(data: List[Dict[str, Any]], search: str) -> List[Dict[st
         if pattern.search(str(op.get('description', '')))
     ]
 
+
 def format_date(date_str: str) -> str:
     try:
         dt = datetime.strptime(date_str, '%Y-%m-%d')
         return dt.strftime('%d.%m.%Y')
     except  ValueError:
         return date_str
+
 
 def print_operations(ops: List[Dict[str, Any]]):
     if not ops:
