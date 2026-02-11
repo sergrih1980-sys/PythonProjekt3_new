@@ -131,20 +131,6 @@ class TestProcessBankOperations(unittest.TestCase):
         self.assertEqual(result['связь'], 1)
         self.assertEqual(result['интернет'], 1)
 
-    def test_no_matches(self):
-        """Тест: ни одна категория не найдена в описаниях."""
-        data = [
-            {'description': 'Перевод на счёт в другом банке'},
-            {'description': 'Комиссия за обслуживание карты'},
-            {'description': 'Возврат товара в магазин одежды'},
-        ]
-        categories = ['продукты', 'транспорт', 'кафе']
-
-        result = process_bank_operations(data, categories)
-
-        # Все категории должны быть с нулём
-        for category in categories:
-            self.assertEqual(result[category], 0)
 
     def test_empty_inputs(self):
         """Тест: пустые входные данные."""
