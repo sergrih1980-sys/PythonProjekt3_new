@@ -107,13 +107,13 @@ class TestBankOperations(unittest.TestCase):
 
         # Тест вывода операций
         @patch('builtins.print')
-        def test_print_operations_non_empty(self, mock_print):
+    def test_print_operations_non_empty(self, mock_print):
             print_operations(self.SAMPLE_DATA[:1])
             output = ''.join(call[0][0] for call in mock_print.call_args_list)
             self.assertIn('Всего банковских операций в выборке: 1', output)
             self.assertIn('Покупка в магазине Пятерочка', output)
 
-        @patch('builtins.print')
-        def test_print_operations_empty(self, mock_print):
+    @patch('builtins.print')
+    def test_print_operations_empty(self, mock_print):
             print_operations([])
             mock_print.assert_called_with("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
