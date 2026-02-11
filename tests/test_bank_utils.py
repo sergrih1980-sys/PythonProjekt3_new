@@ -1,21 +1,14 @@
-import unittest
-import json
 import csv
+import json
 import os
-
+import unittest
 from unittest.mock import patch
+
 import pandas as pd
 
 # Импортируем тестируемые функции
-from src.bank_utils import (
-    load_from_json,
-    load_from_csv,
-    load_from_xlsx,
-    filter_by_status,
-    filter_ruble_only,
-    process_bank_search,
-    print_operations
-)
+from src.bank_utils import (filter_by_status, filter_ruble_only, load_from_csv, load_from_json, load_from_xlsx,
+                            print_operations, process_bank_search)
 
 
 class TestBankOperations(unittest.TestCase):
