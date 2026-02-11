@@ -87,3 +87,23 @@ def print_operations(ops: List[Dict[str, Any]]):
         if to_acc:
             print(f"Кому: {to_acc}")
         print(f"Сумма: {amount} {currency}")
+
+
+def process_bank_operations(data: list[dict], categories: list) -> dict:
+
+    """ Группирует банковские операции по категориям и подсчитывает количество операций в каждой категории. """
+
+    # Инициализируем словарь с нулевыми счётчиками для всех категорий
+    result = {category: 0 for category in categories}
+
+    # Проходим по всем операциям
+    for operation in data:
+        description = operation.get('description', '').lower()
+
+        # Проверяем каждую категорию
+        for category in categories:
+            # Если название категории встречается в описании операции
+            if category.lower() in description:
+                result[category] += 1
+
+    return result
