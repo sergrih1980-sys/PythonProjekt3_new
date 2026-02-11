@@ -5,6 +5,7 @@ from typing import List, Dict, Any
 import re
 from datetime import datetime
 
+
 """ Загрузка данных из разных форматов """
 def load_from_json(filepath: str) -> List[Dict[str, Any]]:
     with open(filepath, 'r', encoding='utf-8') as f:
@@ -53,7 +54,7 @@ def format_date(date_str: str) -> str:
     try:
         dt = datetime.strptime(date_str, '%Y-%m-%d')
         return dt.strftime('%d.%m.%Y')
-    except:
+    except  ValueError:
         return date_str
 
 def print_operations(ops: List[Dict[str, Any]]):
