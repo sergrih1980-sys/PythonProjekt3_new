@@ -8,13 +8,16 @@ import pandas as pd
 
 
 """ Загрузка данных из разных форматов """
+
 def load_from_json(filepath: str) -> List[Dict[str, Any]]:
     with open(filepath, 'r', encoding='utf-8') as f:
         return json.load(f)
 
+
 def load_from_csv(filepath: str) -> List[Dict[str, Any]]:
     with open(filepath, 'r', encoding='utf-8') as f:
         return list(csv.DictReader(f))
+
 
 def load_from_xlsx(filepath: str) -> List[Dict[str, Any]]:
     df = pd.read_excel(filepath)
