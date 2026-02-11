@@ -73,14 +73,14 @@ class TestBankOperations(unittest.TestCase):
 
         # Тесты загрузки данных
     def test_load_from_json(self):
-            data = load_from_json('test_data.json')
-            self.assertEqual(len(data), 3)
-            self.assertEqual(data[0]['description'], 'Покупка в магазине Пятерочка')
+        data = load_from_json('test_data.json')
+        self.assertEqual(len(data), 3)
+        self.assertEqual(data[0]['description'], 'Покупка в магазине Пятерочка')
 
     def test_load_from_csv(self):
-            data = load_from_csv('test_data.csv')
-            self.assertEqual(len(data), 3)
-            self.assertEqual(data[1]['status'], 'CANCELED')
+        data = load_from_csv('test_data.csv')
+        self.assertEqual(len(data), 3)
+        self.assertEqual(data[1]['status'], 'CANCELED')
 
     @patch('pandas.read_excel')
     def test_load_from_xlsx(self, mock_read_excel):
@@ -108,12 +108,12 @@ class TestBankOperations(unittest.TestCase):
         # Тест вывода операций
     @patch('builtins.print')
     def test_print_operations_non_empty(self, mock_print):
-            print_operations(self.SAMPLE_DATA[:1])
-            output = ''.join(call[0][0] for call in mock_print.call_args_list)
-            self.assertIn('Всего банковских операций в выборке: 1', output)
-            self.assertIn('Покупка в магазине Пятерочка', output)
+        print_operations(self.SAMPLE_DATA[:1])
+        output = ''.join(call[0][0] for call in mock_print.call_args_list)
+        self.assertIn('Всего банковских операций в выборке: 1', output)
+        self.assertIn('Покупка в магазине Пятерочка', output)
 
     @patch('builtins.print')
     def test_print_operations_empty(self, mock_print):
-            print_operations([])
-            mock_print.assert_called_with("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
+        print_operations([])
+        mock_print.assert_called_with("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
