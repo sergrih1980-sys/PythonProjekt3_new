@@ -8,7 +8,7 @@ import pandas as pd
 
 # Импортируем тестируемые функции
 from src.bank_utils import (filter_by_status, filter_ruble_only, load_from_csv, load_from_json, load_from_xlsx,
-                            print_operations, process_bank_search)
+                            print_operations, process_bank_operations, process_bank_search)
 
 
 class TestBankOperations(unittest.TestCase):
@@ -110,3 +110,28 @@ class TestBankOperations(unittest.TestCase):
     def test_print_operations_empty(self, mock_print):
         print_operations([])
         mock_print.assert_called_with("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
+
+
+class TestProcessBankOperations(unittest.TestCase):
+
+    def test_empty_inputs(self):
+        """Тест: пустые входные данные."""
+        # 1. Пустой список операций
+        data_empty = []
+        categories = ['продукты', 'связь']
+        result1 = process_bank_operations(data_empty, categories)
+        self.assertEqual(result1, {'продукты': 0, 'связь': 0})
+
+        # 2. Пустой список категорий
+        data = [{'description': 'Покупка продуктов'}]
+        categories_empty = []
+        result2 = process_bank_operations(data, categories_empty)
+        self.assertEqual(result2, {})  # Ожидаем пустой словарь
+
+        # 3. И операции, и категории пустые
+        result3 = process_bank_operations([], [])
+        self.assertEqual(result3, {})
+
+
+if __name__ == '__main__':
+    unittest.main()

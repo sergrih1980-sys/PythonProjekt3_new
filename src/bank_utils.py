@@ -63,7 +63,7 @@ def format_date(date_str: str) -> str:
     try:
         dt = datetime.strptime(date_str, '%Y-%m-%d')
         return dt.strftime('%d.%m.%Y')
-    except  ValueError:
+    except ValueError:
         return date_str
 
 
@@ -87,3 +87,26 @@ def print_operations(ops: List[Dict[str, Any]]):
         if to_acc:
             print(f"Кому: {to_acc}")
         print(f"Сумма: {amount} {currency}")
+
+
+def process_bank_operations(data: list[dict], categories: list) -> dict:
+    """Группирует банковские операции по категориям и подсчитывает количество операций в каждой категории."""
+    result = {category: 0 for category in categories}
+
+    for operation in data:
+        # Получаем описание, приводим к нижнему регистру
+        description = operation.get('description', '').lower()
+
+        # Нормализуем разделители: заменяем длинное тире, дефис и другие на пробел
+        for sep in ['—', '-', '–', '―']:
+            description = description.replace(sep, ' ')
+
+        # Убираем лишние пробелы
+        description = ' '.join(description.split())
+
+        for category in categories:
+            category_lower = category.lower()
+            if category_lower in description:
+                result[category] += 1
+
+    return result
