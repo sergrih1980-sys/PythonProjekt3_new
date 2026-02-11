@@ -106,7 +106,7 @@ class TestBankOperations(unittest.TestCase):
         self.assertEqual(found, [])
 
         # Тест вывода операций
-        @patch('builtins.print')
+    @patch('builtins.print')
     def test_print_operations_non_empty(self, mock_print):
             print_operations(self.SAMPLE_DATA[:1])
             output = ''.join(call[0][0] for call in mock_print.call_args_list)
