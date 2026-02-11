@@ -2,8 +2,8 @@ import unittest
 import json
 import csv
 import os
-from datetime import datetime
-from unittest.mock import patch, mock_open
+
+from unittest.mock import patch
 import pandas as pd
 
 # Импортируем тестируемые функции
@@ -12,10 +12,8 @@ from src.bank_utils import (
     load_from_csv,
     load_from_xlsx,
     filter_by_status,
-    sort_by_date,
     filter_ruble_only,
     process_bank_search,
-    format_date,
     print_operations
 )
 
@@ -74,12 +72,12 @@ class TestBankOperations(unittest.TestCase):
                 os.remove(fname)
 
         # Тесты загрузки данных
-        def test_load_from_json(self):
+    def test_load_from_json(self):
             data = load_from_json('test_data.json')
             self.assertEqual(len(data), 3)
             self.assertEqual(data[0]['description'], 'Покупка в магазине Пятерочка')
 
-        def test_load_from_csv(self):
+    def test_load_from_csv(self):
             data = load_from_csv('test_data.csv')
             self.assertEqual(len(data), 3)
             self.assertEqual(data[1]['status'], 'CANCELED')
@@ -119,7 +117,3 @@ class TestBankOperations(unittest.TestCase):
         def test_print_operations_empty(self, mock_print):
             print_operations([])
             mock_print.assert_called_with("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
-
-
-
-

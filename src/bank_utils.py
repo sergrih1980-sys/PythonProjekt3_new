@@ -3,8 +3,8 @@ import json
 import re
 from datetime import datetime
 from typing import Any, Dict, List
-import pandas as pd
 
+import pandas as pd
 
 """ Загрузка данных из разных форматов """
 
