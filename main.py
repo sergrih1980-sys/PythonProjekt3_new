@@ -125,7 +125,7 @@ def main():
     print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
 
 
-    # Шаг 1. Выбор источника данных
+    # Выбор источника данных
     print("Выберите необходимый пункт меню:")
     print("1. Получить информацию о транзакциях из JSON-файла")
     print("2. Получить информацию о транзакциях из CSV-файла")
@@ -150,7 +150,7 @@ def main():
         print("Неверный выбор. Завершаем работу.")
         return
 
-    # Шаг 2. Фильтрация по статусу
+    # Фильтрация по статусу
     valid_statuses = {'EXECUTED', 'CANCELED', 'PENDING'}
     while True:
         print("Введите статус, по которому необходимо выполнить фильтрацию.")
@@ -163,7 +163,7 @@ def main():
         else:
             print(f'Статус операции "{status}" недоступен.')
 
-    # Шаг 3. Сортировка по дате
+    # Сортировка по дате
     print("Отсортировать операции по дате? Да/Нет")
     sort_choice = input("> ").strip().lower()
     if sort_choice in ('да', 'yes', 'y'):
@@ -172,7 +172,7 @@ def main():
         ascending = order in ('возрастанию', 'asc', 'по возрастанию')
         filtered.sort(key=lambda x: x.get('date', ''), reverse=not ascending)
 
-    # Шаг 4. Фильтрация рублёвых операций
+    # Фильтрация рублёвых операций
     print("Выводить только рублевые транзакции? Да/Нет")
     ruble_choice = input("> ").strip().lower()
     if ruble_choice in ('да', 'yes', 'y'):
@@ -181,14 +181,14 @@ def main():
             if str(op.get('currency', '')).upper() in {'RUB', 'РУБ'}
         ]
 
-    # Шаг 5. Поиск по слову в описании
+    # Поиск по слову в описании
     print("Отфильтровать список транзакций по определённому слову в описании? Да/Нет")
     search_choice = input("> ").strip().lower()
     if search_choice in ('да', 'yes', 'y'):
         search_word = input("Введите слово для поиска: ").strip()
         filtered = process_bank_search(filtered, search_word)
 
-    # Шаг 6. Вывод результата
+    # Вывод результата
     print("Распечатываю итоговый список транзакций...")
     print_operations(filtered)
 
