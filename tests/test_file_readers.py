@@ -64,9 +64,7 @@ class TestReadTransactionsExcel(unittest.TestCase):
         mock_df = pd.DataFrame([{'дата': '2024-01-03', 'сумма': 200}])
         mock_read_excel.return_value = mock_df
 
-
         result = read_transactions_excel('one_row.xlsx')
-
 
         expected = [{'дата': '2024-01-03', 'сумма': 200}]
         self.assertEqual(result, expected)
@@ -137,4 +135,3 @@ class TestReadTransactionsCSV(unittest.TestCase):
             {'имя': 'Петров, Пётр', 'возраст': '25'}
         ]
         self.assertEqual(result, expected)
-
