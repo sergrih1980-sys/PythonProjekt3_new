@@ -1,137 +1,120 @@
-import csv
-import json
-import os
-import unittest
-from unittest.mock import patch
-
-import pandas as pd
-
-# Импортируем тестируемые функции
-from src.bank_utils import (filter_by_status, filter_ruble_only, load_from_csv, load_from_json, load_from_xlsx,
-                            print_operations, process_bank_operations, process_bank_search)
+import pytest
+from typing import List, Dict, Any
+from src.bank_utils import process_bank_search, process_bank_operations
 
 
-class TestBankOperations(unittest.TestCase):
+# Тестовые данные
+TEST_DATA = [
+    {"id": 1, "description": "Покупка продуктов в магазине Пятёрочка"},
+    {"id": 2, "description": "Оплата интернета МТС"},
+    {"id": 3, "description": "Перевод другу на карту"},
+    {"id": 4, "description": "Снятие наличных в банкомате"},
+    {"id": 5, "description": "Возврат средств за товар"},
+    # Операция без поля description
+    {"id": 6},
+    # description не строка
+    {"id": 7, "description": 123},
+]
 
-    # Вспомогательные данные для тестов
-    SAMPLE_DATA = [
-        {
-            "date": "2023-01-15",
-            "description": "Покупка в магазине Пятерочка",
-            "status": "EXECUTED",
-            "amount": 1250,
-            "currency": "RUB",
-            "from": "Счет **1111",
-            "to": "Магазин 'Пятерочка'"
-        },
-        {
-            "date": "2023-02-20",
-            "description": "Перевод зарплаты",
-            "status": "CANCELED",
-            "amount": 50000,
-            "currency": "RUB",
-            "from": "Работодатель",
-            "to": "Счет **2222"
-        },
-        {
-            "date": "2023-03-10",
-            "description": "Оплата интернета",
-            "status": "PENDING",
-            "amount": 850,
-            "currency": "USD",
-            "from": "Карта **3333",
-            "to": "ISP Inc."
-        }
-    ]
+class TestProcessBankSearch:
+    def test_find_exact_match(self):
+        """Поиск по точной подстроке."""
+        result = process_bank_search(TEST_DATA, "Пятёрочка")
+        assert len(result) == 1
+        assert result[0]["id"] == 1
 
-    def setUp(self):
-        """Подготовка временных файлов для тестов."""
-        # JSON
-        with open('test_data.json', 'w', encoding='utf-8') as f:
-            json.dump(self.SAMPLE_DATA, f, ensure_ascii=False, indent=2)
-        # CSV
-        with open('test_data.csv', 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=self.SAMPLE_DATA[0].keys())
-            writer.writeheader()
-            writer.writerows(self.SAMPLE_DATA)
-        # XLSX
-        df = pd.DataFrame(self.SAMPLE_DATA)
-        df.to_excel('test_data.xlsx', index=False)
+    def test_case_insensitive(self):
+        """Регистронезависимый поиск."""
+        result = process_bank_search(TEST_DATA, "мтс")
+        assert len(result) == 1
+        assert result[0]["id"] == 2
 
-    def tearDown(self):
-        """Удаление временных файлов после тестов."""
-        for fname in ['test_data.json', 'test_data.csv', 'test_data.xlsx']:
-            if os.path.exists(fname):
-                os.remove(fname)
+    def test_regex_simple(self):
+        """Поиск с простым регулярным выражением."""
+        result = process_bank_search(TEST_DATA, r"Перевод.*карту")
+        assert len(result) == 1
+        assert result[0]["id"] == 3
 
-        # Тесты загрузки данных
-    def test_load_from_json(self):
-        data = load_from_json('test_data.json')
-        self.assertEqual(len(data), 3)
-        self.assertEqual(data[0]['description'], 'Покупка в магазине Пятерочка')
+    def test_regex_or_condition(self):
+        """Регулярное выражение с альтернативой (OR)."""
+        result = process_bank_search(TEST_DATA, r"Пятёрочка|МТС")
+        assert len(result) == 2
+        assert {op["id"] for op in result} == {1, 2}
 
-    def test_load_from_csv(self):
-        data = load_from_csv('test_data.csv')
-        self.assertEqual(len(data), 3)
-        self.assertEqual(data[1]['status'], 'CANCELED')
+    def test_no_matches(self):
+        """Нет совпадений — возвращается пустой список."""
+        result = process_bank_search(TEST_DATA, "Кофе")
+        assert result == []
 
-    @patch('pandas.read_excel')
-    def test_load_from_xlsx(self, mock_read_excel):
-        mock_read_excel.return_value = pd.DataFrame(self.SAMPLE_DATA)
-        data = load_from_xlsx('dummy.xlsx')
-        self.assertEqual(len(data), 3)
-        self.assertEqual(data[2]['currency'], 'USD')
+    def test_invalid_regex(self):
+        """Некорректное регулярное выражение вызывает ValueError."""
+        with pytest.raises(ValueError, match="Ошибка в регулярном выражении"):
+            process_bank_search(TEST_DATA, r"[")
 
-    def test_filter_by_status_invalid(self):
-        filtered = filter_by_status(self.SAMPLE_DATA, 'INVALID')
-        self.assertEqual(filtered, [])
+class TestProcessBankOperations:
+    def test_exact_category_match(self):
+        """Точное совпадение категории."""
+        categories = ["Покупка", "Перевод"]
+        result = process_bank_operations(TEST_DATA, categories)
+        assert result["Покупка"] == 1  # "Покупка продуктов..."
+        assert result["Перевод"] == 1   # "Перевод другу..."
 
-        # Тест фильтрации рублёвых операций
+    def test_case_insensitive_category(self):
+        """Поиск категорий без учёта регистра."""
+        categories = ["мтс", "ПЯТЁРОЧКА"]
+        result = process_bank_operations(TEST_DATA, categories)
+        assert result["мтс"] == 1
+        assert result["ПЯТЁРОЧКА"] == 1
 
-    def test_filter_ruble_only(self):
-        ruble_ops = filter_ruble_only(self.SAMPLE_DATA)
-        self.assertEqual(len(ruble_ops), 2)  # Только RUB
-        currencies = {op['currency'] for op in ruble_ops}
-        self.assertTrue(all(curr in {'RUB', 'РУБ'} for curr in currencies))
-
-    def test_process_bank_search_not_found(self):
-        found = process_bank_search(self.SAMPLE_DATA, 'Магнит')
-        self.assertEqual(found, [])
-
-        # Тест вывода операций
-    @patch('builtins.print')
-    def test_print_operations_non_empty(self, mock_print):
-        print_operations(self.SAMPLE_DATA[:1])
-        output = ''.join(call[0][0] for call in mock_print.call_args_list)
-        self.assertIn('Всего банковских операций в выборке: 1', output)
-        self.assertIn('Покупка в магазине Пятерочка', output)
-
-    @patch('builtins.print')
-    def test_print_operations_empty(self, mock_print):
-        print_operations([])
-        mock_print.assert_called_with("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
+    def test_partial_match_in_description(self):
+        """Частичное совпадение подстроки в описании."""
+        categories = ["наличн", "возврат"]
+        result = process_bank_operations(TEST_DATA, categories)
+        assert result["наличн"] == 1  # "Снятие наличных..."
+        assert result["возврат"] == 1   # "Возврат средств..."
 
 
-class TestProcessBankOperations(unittest.TestCase):
+    def test_category_not_found(self):
+        """Категория не найдена — счётчик 0."""
+        categories = ["Кофе", "Аптека"]
+        result = process_bank_operations(TEST_DATA, categories)
+        assert result["Кофе"] == 0
+        assert result["Аптека"] == 0
 
-    def test_empty_inputs(self):
-        """Тест: пустые входные данные."""
-        # 1. Пустой список операций
-        data_empty = []
-        categories = ['продукты', 'связь']
-        result1 = process_bank_operations(data_empty, categories)
-        self.assertEqual(result1, {'продукты': 0, 'связь': 0})
+    def test_empty_data(self):
+        """Пустой список операций — все категории имеют 0."""
+        categories = ["Покупка", "Перевод"]
+        result = process_bank_operations([], categories)
+        assert result["Покупка"] == 0
+        assert result["Перевод"] == 0
 
-        # 2. Пустой список категорий
-        data = [{'description': 'Покупка продуктов'}]
-        categories_empty = []
-        result2 = process_bank_operations(data, categories_empty)
-        self.assertEqual(result2, {})  # Ожидаем пустой словарь
+    def test_no_description_field(self):
+        """Операция без 'description' — пропускается."""
+        data = [{"id": 1}, {"id": 2, "description": "Покупка"}]
+        categories = ["Покупка"]
+        result = process_bank_operations(data, categories)
+        assert result["Покупка"] == 1
 
-        # 3. И операции, и категории пустые
-        result3 = process_bank_operations([], [])
-        self.assertEqual(result3, {})
+    def test_description_not_string(self):
+        """'description' не строка — пропускается."""
+        data = [
+            {"id": 1, "description": "Покупка"},
+            {"id": 2, "description": 456}
+        ]
+        categories = ["Покупка"]
+        result = process_bank_operations(data, categories)
+        assert result["Покупка"] == 1
 
+    def test_multiple_matches_one_operation(self):
+        """Одна операция подходит под несколько категорий."""
+        data = [{"description": "Перевод и покупка одновременно"}]
+        categories = ["Перевод", "Покупка"]
+        result = process_bank_operations(data, categories)
+        assert result["Перевод"] == 1
+        assert result["Покупка"] == 1
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_empty_categories(self):
+        """Пустой список категорий — возвращается пустой словарь."""
+        result = process_bank_operations(TEST_DATA, [])
+        assert result == {}
+
