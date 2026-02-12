@@ -1,5 +1,4 @@
 import pytest
-from typing import List, Dict, Any
 from src.bank_utils import process_bank_search, process_bank_operations
 
 
@@ -16,7 +15,9 @@ TEST_DATA = [
     {"id": 7, "description": 123},
 ]
 
+
 class TestProcessBankSearch:
+
     def test_find_exact_match(self):
         """Поиск по точной подстроке."""
         result = process_bank_search(TEST_DATA, "Пятёрочка")
@@ -51,6 +52,7 @@ class TestProcessBankSearch:
         with pytest.raises(ValueError, match="Ошибка в регулярном выражении"):
             process_bank_search(TEST_DATA, r"[")
 
+
 class TestProcessBankOperations:
     def test_exact_category_match(self):
         """Точное совпадение категории."""
@@ -72,7 +74,6 @@ class TestProcessBankOperations:
         result = process_bank_operations(TEST_DATA, categories)
         assert result["наличн"] == 1  # "Снятие наличных..."
         assert result["возврат"] == 1   # "Возврат средств..."
-
 
     def test_category_not_found(self):
         """Категория не найдена — счётчик 0."""
@@ -117,4 +118,3 @@ class TestProcessBankOperations:
         """Пустой список категорий — возвращается пустой словарь."""
         result = process_bank_operations(TEST_DATA, [])
         assert result == {}
-
