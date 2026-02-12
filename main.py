@@ -125,20 +125,3 @@ if __name__ == "__main__":
     main()
 
 
-# Раскомментируйте ниже для тестирования отдельных функций.
-"""
-    print("\n--- Тестирование функций маскирования ---")
-    test_card_number = "7000 7922 8960 6361"
-    print("Маска карты:", get_mask_card_number(test_card_number))
-
-    test_account_number = "73654108430135874305"
-    print("Маска счёта:", get_mask_account(test_account_number))
-
-    print("Маска (Visa):", mask_account_card("Visa Platinum 7000792289606361"))
-    print("Маска (Maestro):", mask_account_card("Maestro 7000792289606361"))
-    print("Маска (Счёт):", mask_account_card("Счёт 73654108430135874305"))
-
-    print("\n--- Тестирование преобразования даты ---")
-    print("Дата (ISO → DD.MM.YYYY):", get_date("2024-03-11T02:26:18.671407"))
-    print("Дата (некорректная):", get_date("некорректная_дата"))
-    """
