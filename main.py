@@ -2,8 +2,6 @@
 
 from src.generators import filter_by_currency
 from src.utils import load_financial_operations
-from src.masks import get_mask_account, get_mask_card_number
-from src.widget import get_date, mask_account_card
 from src.bank_utils import process_bank_search
 from src.file_readers import read_transactions_csv, read_transactions_excel
 from src.processing import filter_by_state, sort_by_date
