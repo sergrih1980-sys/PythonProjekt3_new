@@ -1,5 +1,5 @@
 import re
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 
 def process_bank_search(data: List[Dict[str, Any]], search: str) -> List[Dict[str, Any]]:

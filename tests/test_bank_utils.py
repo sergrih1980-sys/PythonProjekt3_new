@@ -1,6 +1,6 @@
 import pytest
-from src.bank_utils import process_bank_search, process_bank_operations
 
+from src.bank_utils import process_bank_operations, process_bank_search
 
 # Тестовые данные
 TEST_DATA = [
