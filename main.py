@@ -1,84 +1,15 @@
 
-from typing import List, Dict
 
 from src.generators import filter_by_currency
-from src.masks import get_mask_account, get_mask_card_number
 from src.utils import load_financial_operations
+from src.masks import get_mask_account, get_mask_card_number
 from src.widget import get_date, mask_account_card
-
-
-def filter_by_state(
-        dict_list: List[Dict[str, str]],
-        state: str = "EXECUTED"
-) -> List[Dict[str, str]]:
-    """
-    Фильтрует список словарей по значению ключа 'state'.
-
-    Returns:
-        Список словарей (может быть пустым, но не None).
-    """
-    filtered_list = []
-    for item in dict_list:
-        if item.get('state') == state:
-            filtered_list.append(item)
-    return filtered_list  # Всегда возвращает список!
-
-
-def sort_by_date(
-        list_dict: List[Dict[str, str]],
-        reverse: bool = True
-) -> List[Dict[str, str]]:
-    """
-    Сортирует список словарей по дате (ключу 'date').
-    """
-    return sorted(list_dict, key=lambda x: x["date"], reverse=reverse)
-
-
-if __name__ == "__main__":
-    test_data = [
-        {'id': '41428829', 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'},
-        {'id': '939719570', 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'},
-        {'id': '594226727', 'state': 'CANCELED', 'date': '2018-09-12T21:27:25.241689'},
-        {'id': '615064591', 'state': 'CANCELED', 'date': '2018-10-14T08:21:33.419441'}
-    ]
-
-    executed_transactions = filter_by_state(test_data, "EXECUTED")
-    # Теперь executed_transactions гарантированно список (возможно, пустой)
-
-    if executed_transactions:  # Проверяем, есть ли данные
-        sorted_transactions = sort_by_date(executed_transactions, reverse=True)
-        print("Отфильтрованные и отсортированные транзакции:")
-        for transaction in sorted_transactions:
-            print(transaction)
-    else:
-        print("Нет транзакций в статусе 'EXECUTED'")
-
-    if __name__ == "__main__":
-        test_card_number = "7000 7922 8960 6361"
-        print(get_mask_card_number(test_card_number))
-
-        test_account_number = "73654108430135874305"
-        print(get_mask_account(test_account_number))
-
-        # Примеры использования (можно убрать в продакшене)
-    if __name__ == "__main__":
-        # Тестирование маскирования карт/счетов
-        print(mask_account_card("Visa Platinum 7000792289606361"))  # 7000 79** **** 6361
-        print(mask_account_card("Maestro 7000792289606361"))  # 7000 79** **** 6361
-        print(mask_account_card("Счет 73654108430135874305"))  # Счет **4305
-
-        # Тестирование преобразования даты
-        print(get_date("2024-03-11T02:26:18.671407"))  # 11.03.2024
-        print(get_date("2025-12-20T10:30:45.123456"))  # 20.12.2025
-        print(get_date("некорректная_дата"))  # Некорректный формат даты
-
-# Импорты локальных функций
 from src.bank_utils import process_bank_search
 from src.file_readers import read_transactions_csv, read_transactions_excel
 from src.processing import filter_by_state, sort_by_date
 
 
-def main(операций=None, transaction=None):
+def main():
     print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
     print("Выберите необходимый пункт меню:")
     print("1. Получить информацию о транзакциях из JSON‑файла")
@@ -113,7 +44,7 @@ def main(операций=None, transaction=None):
         print("Не удалось загрузить транзакции. Проверьте путь к файлу и его содержимое.")
         return
 
-    # Фильтрация по статусу (с приведением к верхнему регистру)
+    # Фильтрация по статусу
     valid_states = {'EXECUTED', 'CANCELED', 'PENDING'}
     print("Введите статус, по которому необходимо выполнить фильтрацию.")
     print("Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING")
@@ -126,10 +57,8 @@ def main(операций=None, transaction=None):
         print("Введите статус, по которому необходимо выполнить фильтрацию.")
         print("Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING")
 
-
     filtered_transactions = filter_by_state(transactions, status)
     print(f'Операции отфильтрованы по статусу "{status}".')
-
 
     if not filtered_transactions:
         print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации.")
@@ -176,22 +105,40 @@ def main(операций=None, transaction=None):
     print(f"!Всего банковских операций в выборке: {len(filtered_transactions)}\n")
 
     for idx, transaction in enumerate(filtered_transactions, 1):
-        # Извлекаем и форматируем данные
         date_str = transaction.get('date', 'Неизвестно')
         description = transaction.get('description', 'Нет описания')
         amount = transaction.get('amount', 'Неизвестно')
         currency = transaction.get('currency', 'Неизвестно')
 
-
         # Форматируем дату (если ISO-формат)
         if isinstance(date_str, str) and 'T' in date_str:
-            date_str = date_str.split('T')[0]  # Берём только дату
+            date_str = date_str.split('T')[0]
 
         print(f"{idx}. {date_str} {description}")
         print(f"!   Сумма: {amount} {currency}")
         print()
 
 
-
+# Тестовый блок (выполняется только при запуске как main, не при импорте)
 if __name__ == "__main__":
+    # Запускаем основную программу
     main()
+
+
+# Раскомментируйте ниже для тестирования отдельных функций.
+"""
+    print("\n--- Тестирование функций маскирования ---")
+    test_card_number = "7000 7922 8960 6361"
+    print("Маска карты:", get_mask_card_number(test_card_number))
+
+    test_account_number = "73654108430135874305"
+    print("Маска счёта:", get_mask_account(test_account_number))
+
+    print("Маска (Visa):", mask_account_card("Visa Platinum 7000792289606361"))
+    print("Маска (Maestro):", mask_account_card("Maestro 7000792289606361"))
+    print("Маска (Счёт):", mask_account_card("Счёт 73654108430135874305"))
+
+    print("\n--- Тестирование преобразования даты ---")
+    print("Дата (ISO → DD.MM.YYYY):", get_date("2024-03-11T02:26:18.671407"))
+    print("Дата (некорректная):", get_date("некорректная_дата"))
+    """
