@@ -1,10 +1,10 @@
 
 
-from src.generators import filter_by_currency
-from src.utils import load_financial_operations
 from src.bank_utils import process_bank_search
 from src.file_readers import read_transactions_csv, read_transactions_excel
+from src.generators import filter_by_currency
 from src.processing import filter_by_state, sort_by_date
+from src.utils import load_financial_operations
 
 
 def main():
@@ -121,5 +121,3 @@ def main():
 if __name__ == "__main__":
     # Запускаем основную программу
     main()
-
-
