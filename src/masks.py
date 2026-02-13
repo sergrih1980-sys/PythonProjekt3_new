@@ -91,4 +91,3 @@ if __name__ == "__main__":
     # Тесты на ошибки
     print("Маска пустой карты:", get_mask_card_number(""))
     print("Маска пустого счёта:", get_mask_account(""))
-

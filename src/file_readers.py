@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 
-def read_transactions_csv(file_path):
+def read_transactions_csv(file_path, delimiter=','):
     """
     Считывает финансовые операции из CSV‑файла.
 
@@ -20,7 +20,7 @@ def read_transactions_csv(file_path):
 
     transactions = []
     with open(file_path, mode='r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
+        reader = csv.DictReader(file, delimiter=delimiter)
         for row in reader:
             transactions.append(dict(row))  # Преобразуем OrderedDict в обычный dict
     return transactions
