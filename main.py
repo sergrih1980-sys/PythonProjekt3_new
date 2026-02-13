@@ -14,7 +14,7 @@ def main():
     print("2. Получить информацию о транзакциях из CSV‑файла")
     print("3. Получить информацию о транзакциях из XLSX‑файла")
 
-   # Выбор источника данных
+    # Выбор источника данных
     while True:
         choice = input("> ").strip()
         if choice in ['1', '2', '3']:
@@ -109,7 +109,6 @@ def main():
         print(f"Поиск: '{search_term}'")
     print("=" * 60 + "\n")
 
-
     for idx, transaction in enumerate(filtered_transactions, 1):
         date_str = transaction.get('date', 'Неизвестно')
         description = transaction.get('description', 'Нет описания')
@@ -130,6 +129,7 @@ def main():
         print(f"{idx}. {date_str} | {description}")
         print(f"!   Сумма: {amount} {currency}")
         print("-!" * 50)
+
 
 # Тестовый блок (
 if __name__ == "__main__":
