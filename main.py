@@ -52,8 +52,10 @@ def main():
             break
         print(f'Статус операции "{status}" недоступен. Попробуйте ещё раз.')
 
+
     filtered_transactions = filter_by_state(transactions, status)
     print(f'Операции отфильтрованы по статусу "{status}".')
+
 
     if not filtered_transactions:
         print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации.")
@@ -88,7 +90,7 @@ def main():
     search_choice = input("> ").strip().lower()
     if search_choice in ['да', 'yes', 'y']:
         search_term = input("Введите слово/шаблон для поиска: ").strip()
-        if search_term:
+        if search_term:  # Проверка на пустую строку
             try:
                 filtered_transactions = process_bank_search(
                     filtered_transactions, search_term
@@ -101,7 +103,7 @@ def main():
                 return
 
     # Вывод итогового результата
-    print("\n" + "=" * 60)
+    print("\n" + "=" * 60)  # Убран лишний "!"
     print(f"Итого найдено транзакций: {len(filtered_transactions)}")
     if rub_choice in ['да', 'yes', 'y']:
         print("Фильтр: только RUB")
@@ -110,8 +112,8 @@ def main():
     print("=" * 60 + "\n")
 
     for idx, transaction in enumerate(filtered_transactions, 1):
-        date_str = transaction.get('date', 'Неизвестно')
-        description = transaction.get('description', 'Нет описания')
+        date_str = transaction.get('date', 'Неизвестно') or 'Неизвестно'
+        description = transaction.get('description', 'Нет описания') or 'Нет описания'
         amount = transaction.get('amount') or 'Неизвестно'
         currency = transaction.get('currency') or 'Неизвестно'
 
@@ -123,14 +125,11 @@ def main():
                 pass  # оставляем DD.MM.YYYY
             else:
                 date_str = 'Неизвестно'
-        else:
-            date_str = 'Неизвестно'
 
         print(f"{idx}. {date_str} | {description}")
-        print(f"!   Сумма: {amount} {currency}")
-        print("-!" * 50)
-
+        print(f"   Сумма: {amount} {currency}")
+        print("-" * 50)
 
 # Тестовый блок
 if __name__ == "__main__":
-   main()
+    main()
