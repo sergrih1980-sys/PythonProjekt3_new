@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 
-def read_transactions_csv(file_path,  delimiter=','):
+def read_transactions_csv(file_path, delimiter=','):
     """
     Считывает финансовые операции из CSV‑файла.
 
