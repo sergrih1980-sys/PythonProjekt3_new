@@ -1,5 +1,5 @@
 
-import os
+
 from src.bank_utils import process_bank_search
 from src.file_readers import read_transactions_csv, read_transactions_excel
 from src.generators import filter_by_currency
@@ -52,10 +52,8 @@ def main():
             break
         print(f'Статус операции "{status}" недоступен. Попробуйте ещё раз.')
 
-
     filtered_transactions = filter_by_state(transactions, status)
     print(f'Операции отфильтрованы по статусу "{status}".')
-
 
     if not filtered_transactions:
         print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации.")
