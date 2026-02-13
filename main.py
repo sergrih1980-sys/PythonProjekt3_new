@@ -1,5 +1,5 @@
 
-
+import os
 from src.bank_utils import process_bank_search
 from src.file_readers import read_transactions_csv, read_transactions_excel
 from src.generators import filter_by_currency
@@ -101,7 +101,7 @@ def main():
                 return
 
     # Вывод итогового результата
-    print("\n!" + "=" * 60)
+    print("\n" + "=" * 60)
     print(f"Итого найдено транзакций: {len(filtered_transactions)}")
     if rub_choice in ['да', 'yes', 'y']:
         print("Фильтр: только RUB")
@@ -133,4 +133,4 @@ def main():
 
 # Тестовый блок
 if __name__ == "__main__":
-    main()
+   main()
