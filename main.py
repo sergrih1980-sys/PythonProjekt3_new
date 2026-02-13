@@ -14,8 +14,7 @@ def main():
     print("2. Получить информацию о транзакциях из CSV‑файла")
     print("3. Получить информацию о транзакциях из XLSX‑файла")
 
-
-    # Выбор источника данных
+   # Выбор источника данных
     while True:
         choice = input("> ").strip()
         if choice in ['1', '2', '3']:
@@ -23,7 +22,6 @@ def main():
         print("Некорректный выбор. Введите 1, 2 или 3.")
 
     file_path = input("Введите путь к файлу: ").strip()
-
 
     # Загрузка данных в зависимости от выбора
     try:
@@ -48,7 +46,6 @@ def main():
     valid_states = {'EXECUTED', 'CANCELED', 'PENDING'}
     print("Доступные для фильтрации статусы: EXECUTED, CANCELED, PENDING")
 
-
     while True:
         status = input("Введите статус: ").strip().upper()
         if status in valid_states:
@@ -57,7 +54,6 @@ def main():
 
     filtered_transactions = filter_by_state(transactions, status)
     print(f'Операции отфильтрованы по статусу "{status}".')
-
 
     if not filtered_transactions:
         print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации.")
@@ -71,7 +67,6 @@ def main():
         order_choice = input("> ").strip().lower()
         reverse = order_choice in ['убыванию', 'desc', 'убыв']
         filtered_transactions = sort_by_date(filtered_transactions, reverse)
-
 
     # Фильтрация по валюте (только RUB)
     print("Выводить только рублёвые транзакции? (Да/Нет)")
@@ -135,8 +130,6 @@ def main():
         print(f"{idx}. {date_str} | {description}")
         print(f"!   Сумма: {amount} {currency}")
         print("-!" * 50)
-
-
 
 # Тестовый блок (
 if __name__ == "__main__":
