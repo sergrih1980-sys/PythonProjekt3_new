@@ -14,6 +14,7 @@ def main():
     print("2. Получить информацию о транзакциях из CSV‑файла")
     print("3. Получить информацию о транзакциях из XLSX‑файла")
 
+
     # Выбор источника данных
     while True:
         choice = input("> ").strip()
@@ -22,6 +23,7 @@ def main():
         print("Некорректный выбор. Введите 1, 2 или 3.")
 
     file_path = input("Введите путь к файлу: ").strip()
+
 
     # Загрузка данных в зависимости от выбора
     try:
@@ -44,26 +46,25 @@ def main():
 
     # Фильтрация по статусу
     valid_states = {'EXECUTED', 'CANCELED', 'PENDING'}
-    print("Введите статус, по которому необходимо выполнить фильтрацию.")
-    print("Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING")
+    print("Доступные для фильтрации статусы: EXECUTED, CANCELED, PENDING")
+
 
     while True:
-        status = input("> ").strip().upper()
+        status = input("Введите статус: ").strip().upper()
         if status in valid_states:
             break
-        print(f'Статус операции "{status}" недоступен.')
-        print("Введите статус, по которому необходимо выполнить фильтрацию.")
-        print("Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING")
+        print(f'Статус операции "{status}" недоступен. Попробуйте ещё раз.')
 
     filtered_transactions = filter_by_state(transactions, status)
     print(f'Операции отфильтрованы по статусу "{status}".')
+
 
     if not filtered_transactions:
         print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации.")
         return
 
     # Сортировка по дате
-    print("Отсортировать операции по дате? Да/Нет")
+    print("Отсортировать операции по дате? (Да/Нет)")
     sort_choice = input("> ").strip().lower()
     if sort_choice in ['да', 'yes', 'y']:
         print("Отсортировать по возрастанию или по убыванию?")
@@ -71,53 +72,72 @@ def main():
         reverse = order_choice in ['убыванию', 'desc', 'убыв']
         filtered_transactions = sort_by_date(filtered_transactions, reverse)
 
+
     # Фильтрация по валюте (только RUB)
-    print("Выводить только рублёвые транзакции? Да/Нет")
+    print("Выводить только рублёвые транзакции? (Да/Нет)")
     rub_choice = input("> ").strip().lower()
     if rub_choice in ['да', 'yes', 'y']:
         try:
             filtered_transactions = list(filter_by_currency(filtered_transactions, "RUB"))
         except KeyError:
-            print("В данных отсутствует поле 'operationAmount.currency.code'. Пропускаем фильтрацию по валюте.")
+            print(
+                "В данных отсутствует поле 'operationAmount.currency.code'. "
+                "Пропускаем фильтрацию по валюте."
+            )
         if not filtered_transactions:
             print("Не найдено ни одной рублёвой транзакции.")
             return
 
     # Поиск по описанию (регулярное выражение)
-    print("Отфильтровать список транзакций по определённому слову в описании? Да/Нет")
+    print("Отфильтровать список транзакций по слову в описании? (Да/Нет)")
     search_choice = input("> ").strip().lower()
     if search_choice in ['да', 'yes', 'y']:
-        search_term = input("Введите слово/шаблон для поиска в описании: ").strip()
+        search_term = input("Введите слово/шаблон для поиска: ").strip()
         if search_term:
             try:
-                filtered_transactions = process_bank_search(filtered_transactions, search_term)
+                filtered_transactions = process_bank_search(
+                    filtered_transactions, search_term
+                )
             except ValueError as e:
-                print(f"Ошибка в регулярном выражении: {e}")
+                print(f"Ошибка в регулярном выражении: {e}. Пример: '.*магазин.*'")
                 return
             if not filtered_transactions:
                 print("Не найдено транзакций, соответствующих поисковому запросу.")
                 return
 
     # Вывод итогового результата
-    print("\nРаспечатываю итоговый список транзакций...")
-    print(f"!Всего банковских операций в выборке: {len(filtered_transactions)}\n")
+    print("\n!" + "=" * 60)
+    print(f"Итого найдено транзакций: {len(filtered_transactions)}")
+    if rub_choice in ['да', 'yes', 'y']:
+        print("Фильтр: только RUB")
+    if search_term:
+        print(f"Поиск: '{search_term}'")
+    print("=" * 60 + "\n")
+
 
     for idx, transaction in enumerate(filtered_transactions, 1):
         date_str = transaction.get('date', 'Неизвестно')
         description = transaction.get('description', 'Нет описания')
-        amount = transaction.get('amount', 'Неизвестно')
-        currency = transaction.get('currency', 'Неизвестно')
+        amount = transaction.get('amount') or 'Неизвестно'
+        currency = transaction.get('currency') or 'Неизвестно'
 
-        # Форматируем дату (если ISO-формат)
-        if isinstance(date_str, str) and 'T' in date_str:
-            date_str = date_str.split('T')[0]
+        # Безопасная обработка даты
+        if isinstance(date_str, str):
+            if 'T' in date_str:
+                date_str = date_str.split('T')[0]  # ISO формат
+            elif '.' in date_str and len(date_str.split('.')) == 3:
+                pass  # оставляем DD.MM.YYYY
+            else:
+                date_str = 'Неизвестно'
+        else:
+            date_str = 'Неизвестно'
 
-        print(f"{idx}. {date_str} {description}")
+        print(f"{idx}. {date_str} | {description}")
         print(f"!   Сумма: {amount} {currency}")
-        print()
+        print("-!" * 50)
 
 
-# Тестовый блок (выполняется только при запуске как main, не при импорте)
+
+# Тестовый блок (
 if __name__ == "__main__":
-    # Запускаем основную программу
     main()
