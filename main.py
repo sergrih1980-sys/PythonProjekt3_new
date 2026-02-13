@@ -128,6 +128,7 @@ def main():
         print(f"   Сумма: {amount} {currency}")
         print("-" * 50)
 
+
 # Тестовый блок
 if __name__ == "__main__":
     main()
