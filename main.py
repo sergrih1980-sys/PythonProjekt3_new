@@ -7,6 +7,29 @@ from src.processing import filter_by_state, sort_by_date
 from src.utils import load_financial_operations
 
 
+def get_transaction_fields(transaction):
+    """
+    Извлекает date, description, amount, currency из транзакции,
+    поддерживая оба формата: JSON (вложенный) и CSV/Excel (плоский).
+    """
+    # Общие поля (одинаковы для обоих форматов)
+    date_str = transaction.get('date', 'Неизвестно')
+    description = transaction.get('description', 'Нет описания')
+
+    # Извлечение суммы и валюты (зависит от формата)
+    if 'operationAmount' in transaction:
+        # Формат JSON
+        op_amount = transaction['operationAmount']
+        amount = op_amount.get('amount', 'Неизвестно')
+        currency = op_amount.get('currency', {}).get('code', 'Неизвестно')
+    else:
+        # Формат CSV/Excel
+        amount = str(transaction.get('amount', 'Неизвестно'))
+        currency = transaction.get('currency_code', 'Неизвестно')
+
+    return date_str, description, amount, currency
+
+
 def main():
     print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
     print("Выберите необходимый пункт меню:")
@@ -84,7 +107,7 @@ def main():
             return
 
     # Поиск по описанию (регулярное выражение)
-    search_term = None  # Инициализируем заранее, чтобы избежать UnboundLocalError
+    search_term = None
     print("Отфильтровать список транзакций по слову в описании? (Да/Нет)")
     search_choice = input("> ").strip().lower()
     if search_choice in ['да', 'yes', 'y']:
@@ -106,16 +129,12 @@ def main():
     print(f"Итого найдено транзакций: {len(filtered_transactions)}")
     if rub_choice in ['да', 'yes', 'y']:
         print("Фильтр: только RUB")
-    if search_term:
+    if search_term:  # Теперь безопасно: search_term всегда определена
         print(f"Поиск: '{search_term}'")
     print("=" * 60 + "\n")
 
     for idx, transaction in enumerate(filtered_transactions, 1):
-        # Извлекаем данные через .get()
-        date_str = transaction.get('date', 'Неизвестно')
-        description = transaction.get('description', 'Нет описания')
-        amount = transaction.get('amount', 'Неизвестно')
-        currency = transaction.get('currency', 'Неизвестно')
+        date_str, description, amount, currency = get_transaction_fields(transaction)
 
         # Безопасная обработка даты
         if isinstance(date_str, str):
