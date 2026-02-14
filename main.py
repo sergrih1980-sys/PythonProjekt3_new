@@ -30,7 +30,7 @@ def main():
             transactions = load_financial_operations(file_path)
         elif choice == '2':
             print("Для обработки выбран CSV‑файл.")
-            transactions = read_transactions_csv(file_path)
+            transactions = read_transactions_csv(file_path, delimiter=';')
         elif choice == '3':
             print("Для обработки выбран XLSX‑файл.")
             transactions = read_transactions_excel(file_path)
@@ -110,10 +110,11 @@ def main():
     print("=" * 60 + "\n")
 
     for idx, transaction in enumerate(filtered_transactions, 1):
-        date_str = transaction.get('date', 'Неизвестно') or 'Неизвестно'
-        description = transaction.get('description', 'Нет описания') or 'Нет описания'
-        amount = transaction.get('amount') or 'Неизвестно'
-        currency = transaction.get('currency') or 'Неизвестно'
+        # Извлекаем данные через .get()
+        date_str = transaction.get('date', 'Неизвестно')
+        description = transaction.get('description', 'Нет описания')
+        amount = transaction.get('amount', 'Неизвестно')
+        currency = transaction.get('currency', 'Неизвестно')
 
         # Безопасная обработка даты
         if isinstance(date_str, str):
