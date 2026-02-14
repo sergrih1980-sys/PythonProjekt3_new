@@ -84,6 +84,7 @@ def main():
             return
 
     # Поиск по описанию (регулярное выражение)
+    search_term = None  # Инициализируем заранее, чтобы избежать UnboundLocalError
     print("Отфильтровать список транзакций по слову в описании? (Да/Нет)")
     search_choice = input("> ").strip().lower()
     if search_choice in ['да', 'yes', 'y']:
@@ -101,7 +102,7 @@ def main():
                 return
 
     # Вывод итогового результата
-    print("\n" + "=" * 60)  # Убран лишний "!"
+    print("\n" + "=" * 60)
     print(f"Итого найдено транзакций: {len(filtered_transactions)}")
     if rub_choice in ['да', 'yes', 'y']:
         print("Фильтр: только RUB")
